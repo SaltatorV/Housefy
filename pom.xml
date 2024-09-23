@@ -8,27 +8,19 @@
         <version>3.3.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.saltatorv</groupId>
     <artifactId>Housefy</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Housefy</name>
     <description>Housefy</description>
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
+
+    <packaging>pom</packaging>
+
     <properties>
         <java.version>22</java.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
