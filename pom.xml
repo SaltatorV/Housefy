@@ -19,11 +19,16 @@
 
     <properties>
         <java.version>22</java.version>
+
+        <housefy-file-storage-manager.version>0.0.1-SNAPSHOT</housefy-file-storage-manager.version>
+        <housefy-shared.version>0.0.1-SNAPSHOT</housefy-shared.version>
+
+        <pdf-box.version>3.0.2</pdf-box.version>
     </properties>
 
     <modules>
-        <module>file-storage-manager</module>
         <module>shared</module>
+        <module>file-storage-manager</module>
     </modules>
 
     <dependencies>
@@ -31,7 +36,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -49,6 +53,27 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.saltatorv.housefy</groupId>
+                <artifactId>file-storage-manager</artifactId>
+                <version>${housefy-file-storage-manager.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.saltatorv.housefy</groupId>
+                <artifactId>shared</artifactId>
+                <version>${housefy-shared.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox</artifactId>
+                <version>${pdf-box.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>

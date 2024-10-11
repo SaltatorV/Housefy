@@ -14,16 +14,31 @@
     <name>file-storage-manager</name>
     <description>file-storage-manager</description>
 
+    <packaging>jar</packaging>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.saltatorv.housefy</groupId>
+            <artifactId>shared</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
-            <!-- Exclude Spring Boot plugin for library modules -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>repackage</id>
-                        <phase>none</phase> <!-- Skip the repackage phase -->
+                        <phase>none</phase>
                     </execution>
                 </executions>
             </plugin>
