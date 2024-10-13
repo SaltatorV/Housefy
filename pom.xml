@@ -23,8 +23,6 @@
         <housefy-shared.version>0.0.1-SNAPSHOT</housefy-shared.version>
         <housefy-file-storage-manager.version>0.0.1-SNAPSHOT</housefy-file-storage-manager.version>
         <housefy-note-shelf.version>0.0.1-SNAPSHOT</housefy-note-shelf.version>
-
-        <pdf-box.version>3.0.2</pdf-box.version>
     </properties>
 
     <modules>
@@ -72,13 +70,6 @@
                 <groupId>com.saltator.housefy</groupId>
                 <artifactId>note-shelf</artifactId>
                 <version>${housefy-note-shelf.version}</version>
-            </dependency>
-
-
-            <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>pdfbox</artifactId>
-                <version>${pdf-box.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
