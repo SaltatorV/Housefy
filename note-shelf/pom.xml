@@ -12,6 +12,18 @@
     <artifactId>note-shelf</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>note-shelf</name>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.saltatorv.housefy</groupId>
+            <artifactId>file-storage-manager</artifactId>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
