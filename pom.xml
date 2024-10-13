@@ -20,8 +20,9 @@
     <properties>
         <java.version>22</java.version>
 
-        <housefy-file-storage-manager.version>0.0.1-SNAPSHOT</housefy-file-storage-manager.version>
         <housefy-shared.version>0.0.1-SNAPSHOT</housefy-shared.version>
+        <housefy-file-storage-manager.version>0.0.1-SNAPSHOT</housefy-file-storage-manager.version>
+        <housefy-note-shelf.version>0.0.1-SNAPSHOT</housefy-note-shelf.version>
 
         <pdf-box.version>3.0.2</pdf-box.version>
     </properties>
@@ -29,6 +30,7 @@
     <modules>
         <module>shared</module>
         <module>file-storage-manager</module>
+        <module>note-shelf</module>
     </modules>
 
     <dependencies>
@@ -58,14 +60,20 @@
         <dependencies>
             <dependency>
                 <groupId>com.saltatorv.housefy</groupId>
+                <artifactId>shared</artifactId>
+                <version>${housefy-shared.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.saltatorv.housefy</groupId>
                 <artifactId>file-storage-manager</artifactId>
                 <version>${housefy-file-storage-manager.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.saltatorv.housefy</groupId>
-                <artifactId>shared</artifactId>
-                <version>${housefy-shared.version}</version>
+                <groupId>com.saltator.housefy</groupId>
+                <artifactId>note-shelf</artifactId>
+                <version>${housefy-note-shelf.version}</version>
             </dependency>
+
 
             <dependency>
                 <groupId>org.apache.pdfbox</groupId>
