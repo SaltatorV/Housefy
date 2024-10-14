@@ -16,14 +16,13 @@
 
     <build>
         <plugins>
-            <!-- Exclude Spring Boot plugin for library modules -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>repackage</id>
-                        <phase>none</phase> <!-- Skip the repackage phase -->
+                        <phase>none</phase>
                     </execution>
                 </executions>
             </plugin>
