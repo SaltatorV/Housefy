@@ -23,12 +23,14 @@
         <housefy-shared.version>0.0.1-SNAPSHOT</housefy-shared.version>
         <housefy-file-storage-manager.version>0.0.1-SNAPSHOT</housefy-file-storage-manager.version>
         <housefy-note-shelf.version>0.0.1-SNAPSHOT</housefy-note-shelf.version>
+        <housefy-main.version>0.0.1-SNAPSHOT</housefy-main.version>
     </properties>
 
     <modules>
         <module>shared</module>
         <module>file-storage-manager</module>
         <module>note-shelf</module>
+        <module>main</module>
     </modules>
 
     <dependencies>
@@ -71,9 +73,14 @@
                 <version>${housefy-file-storage-manager.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.saltator.housefy</groupId>
+                <groupId>com.saltatorv.housefy</groupId>
                 <artifactId>note-shelf</artifactId>
                 <version>${housefy-note-shelf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.saltatorv.housefy</groupId>
+                <artifactId>main</artifactId>
+                <version>${housefy-main.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -1,4 +1,4 @@
-package com.saltator.housefy.noteshelf;
+package com.saltatorv.housefy.noteshelf;
 
 import com.saltatorv.housefy.file.storage.manager.FileManager;
 import com.saltatorv.housefy.file.storage.manager.FileManagerFactory;
