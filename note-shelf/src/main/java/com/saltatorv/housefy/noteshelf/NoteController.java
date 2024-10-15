@@ -18,7 +18,7 @@ public class NoteController {
     @PostMapping("/note-shelf/note/upload")
     public void uploadFile(MultipartFile file) {
         try {
-            UploadFileData uploadFileData = new UploadFileData(file.getName(), "notes", file.getBytes());
+            UploadFileData uploadFileData = new UploadFileData(file.getOriginalFilename(), "notes", file.getBytes());
             fileManager.uploadFile(uploadFileData);
         } catch (IOException e) {
             throw new RuntimeException(e);
