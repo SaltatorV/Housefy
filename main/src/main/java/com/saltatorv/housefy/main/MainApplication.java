@@ -10,7 +10,7 @@ import org.springframework.context.annotation.PropertySources;
 @ComponentScan(basePackages = "com.saltatorv")
 @PropertySources({
         @PropertySource("classpath:application.properties"),
-        @PropertySource("classpath:note-shelf/application.properties")
+        @PropertySource("classpath:note-shelf.properties")
 })
 public class MainApplication {
 
