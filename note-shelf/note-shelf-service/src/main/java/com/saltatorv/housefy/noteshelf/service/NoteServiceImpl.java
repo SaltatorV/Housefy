@@ -1,9 +1,9 @@
-package com.saltatorv.housefy.noteshelf.note;
+package com.saltatorv.housefy.noteshelf.service;
 
 import org.springframework.stereotype.Component;
 
 @Component
-class NoteService {
+class NoteServiceImpl implements NoteService{
     public void uploadNewNote(UploadNoteCommand command) {
     }
 }

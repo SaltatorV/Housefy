@@ -1,4 +1,4 @@
-package com.saltatorv.housefy.noteshelf;
+package com.saltatorv.housefy.noteshelf.service;
 
 import com.saltatorv.housefy.file.storage.manager.FileManager;
 import com.saltatorv.housefy.file.storage.manager.FileManagerFactory;
@@ -15,5 +15,10 @@ class BeanConfiguration {
     @Bean
     FileManager noteShelfImplementation() {
         return new FileManagerFactory().create(noteShelfFilesDestination);
+    }
+
+    @Bean
+    NoteService noteService() {
+        return new NoteServiceImpl();
     }
 }

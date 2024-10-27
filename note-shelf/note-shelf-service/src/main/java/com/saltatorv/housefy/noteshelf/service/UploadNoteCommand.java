@@ -1,4 +1,4 @@
-package com.saltatorv.housefy.noteshelf.note;
+package com.saltatorv.housefy.noteshelf.service;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

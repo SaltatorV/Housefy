@@ -13,12 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>note-shelf</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.saltatorv.housefy</groupId>
-            <artifactId>file-storage-manager</artifactId>
-        </dependency>
-    </dependencies>
+    <packaging>pom</packaging>
 
     <build>
         <plugins>
