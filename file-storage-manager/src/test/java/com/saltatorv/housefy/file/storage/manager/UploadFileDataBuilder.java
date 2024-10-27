@@ -2,6 +2,8 @@ package com.saltatorv.housefy.file.storage.manager;
 
 import com.saltatorv.housefy.file.storage.manager.dto.UploadFileData;
 
+import java.nio.file.Path;
+
 class UploadFileDataBuilder {
     private String fileName;
     private String destination;
@@ -16,8 +18,8 @@ class UploadFileDataBuilder {
         return this;
     }
 
-    UploadFileDataBuilder withDestination(String destination) {
-        this.destination = destination;
+    UploadFileDataBuilder withDestination(Path destination) {
+        this.destination = destination.toString();
         return this;
     }
 
@@ -27,6 +29,6 @@ class UploadFileDataBuilder {
     }
 
     UploadFileData create() {
-        return new UploadFileData(fileName, destination, content);
+        return new UploadFileData(fileName, content, destination);
     }
 }

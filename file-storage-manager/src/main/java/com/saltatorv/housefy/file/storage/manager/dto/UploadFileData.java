@@ -8,14 +8,11 @@ import java.nio.file.Paths;
 
 @RequiredArgsConstructor
 public class UploadFileData {
+    @Getter
     private final String fileName;
-    private final String destination;
     @Getter
     private final byte[] content;
-
-    public String getFileName() {
-        return fileName;
-    }
+    private final String destination;
 
     public Path getDestination() {
         return Paths.get(destination);
