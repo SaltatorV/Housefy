@@ -7,24 +7,34 @@ import java.nio.file.Path;
 public class File {
 
     private String content;
-    private String fileDestination;
+    private Path fileDestination;
 
-    private File(String content, String fileDestination) {
+    private File(String content, Path fileDestination) {
         this.content = content;
         this.fileDestination = fileDestination;
     }
 
-    public static void upload(String fileName, String fileDestination, String content, boolean createDirectories) {
+    public static File upload(String fileName, String fileDestination, String content, boolean createDirectories) {
+        Path destination = Path.of(fileDestination);
+        createDirectoriesIfNeeded(destination, createDirectories);
 
         try {
-            if (createDirectories) {
-                Path path = Path.of(fileDestination);
-                Files.createDirectories(path);
-            }
-            Path path = Path.of(fileDestination).resolve(Path.of(fileName));
-            Files.write(path, content.getBytes());
+            destination = destination.resolve(Path.of(fileName));
+            Files.write(destination, content.getBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+
+        return new File(content, destination);
+    }
+
+    private static void createDirectoriesIfNeeded(Path fileDestination, boolean createDirectories) {
+        if (createDirectories) {
+            try {
+                Files.createDirectories(fileDestination);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
