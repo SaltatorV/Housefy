@@ -1,48 +1,20 @@
 package com.saltatorv.file.storage.manager;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileTest {
+public class FileTest extends FilesBasedTest {
 
-    public static void deleteDirectoryRecursively(Path path) throws IOException {
-        if (Files.exists(path)) {
-            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    Files.delete(file);
-                    return FileVisitResult.CONTINUE;
-                }
+    private static final Path TEST_DIRECTORY = Path.of("tmp");
 
-                @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    Files.delete(dir);
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        }
-
-    }
-
-    @BeforeEach
-    @AfterEach
-    public void setup() {
-        try {
-            deleteDirectoryRecursively(Path.of("tmp"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public FileTest() {
+        super(TEST_DIRECTORY);
     }
 
     @Test
@@ -51,15 +23,16 @@ public class FileTest {
         //given
         var createDirectories = true;
         var content = "Test content";
-        var fileDestination = "tmp";
+        var fileDestination = "test";
         var fileName = "test.txt";
 
         //when
-        File.upload(fileName, fileDestination, content, createDirectories);
+        uploadFile(fileName, fileDestination, content, createDirectories);
+
 
         //then
-        assertFileExists("tmp/test.txt");
-        assertFileContain("tmp/test.txt", content);
+        assertFileExists("tmp/test/test.txt");
+        assertFileContain("tmp/test/test.txt", content);
     }
 
     @Test
@@ -68,15 +41,19 @@ public class FileTest {
         //given
         var createDirectories = false;
         var content = "Test content";
-        var fileDestination = "tmp";
+        var fileDestination = "test";
         var fileName = "test.txt";
 
         //when
-        assertThrows(RuntimeException.class, () -> File.upload(fileName, fileDestination, content, createDirectories));
+        assertThrows(RuntimeException.class, () -> uploadFile(fileName, fileDestination, content, createDirectories));
 
 
         //then
-        assertFileNotExists("tmp/test.txt");
+        assertFileNotExists("tmp/test/test.txt");
+    }
+
+    private void uploadFile(String fileName, String fileDestination, String content, boolean createDirectories) {
+        File.upload(fileName, TEST_DIRECTORY.resolve(fileDestination).toString(), content, createDirectories);
     }
 
     private void assertFileExists(String fileDestination) {
@@ -88,7 +65,7 @@ public class FileTest {
     }
 
     private void assertFileContain(String fileDestination, String expectedContent) {
-        String fileContent = null;
+        String fileContent;
         try {
             fileContent = Files.readString(Path.of(fileDestination));
         } catch (IOException e) {
