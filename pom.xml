@@ -17,6 +17,10 @@
 
     <properties>
         <java.version>23</java.version>
+
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
         <lombok.version>1.18.36</lombok.version>
         <junit.version>5.11.4</junit.version>
     </properties>
