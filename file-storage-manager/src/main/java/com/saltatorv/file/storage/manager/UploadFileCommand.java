@@ -1,5 +1,7 @@
 package com.saltatorv.file.storage.manager;
 
+import java.nio.file.Path;
+
 public class UploadFileCommand {
     private final String fileName;
     private final Destination destination;
@@ -13,12 +15,12 @@ public class UploadFileCommand {
         this.createDirectories = createDirectories;
     }
 
-    String getFileName() {
-        return fileName;
+    Path getFileName() {
+        return destination.resolve(fileName);
     }
 
-    Destination getDestination() {
-        return destination;
+    Path getDestination() {
+        return destination.getDestination();
     }
 
     byte[] getContent() {
