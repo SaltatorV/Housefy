@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static com.saltatorv.file.storage.manager.UploadFileCommandBuilder.buildUploadFileCommand;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileTest extends FilesBasedTest {
@@ -22,31 +23,33 @@ public class FileTest extends FilesBasedTest {
     @DisplayName("Can upload new file")
     public void canUploadNewFile() {
         //given
-        var createDirectories = true;
-        var content = "Test content";
-        var fileDestination = "test";
-        var fileName = "test.txt";
+        var command = buildUploadFileCommand("test.txt")
+                .withDestination(TEST_DIRECTORY.resolve("test").toString())
+                .withContent("Test content")
+                .withCreateDirectories(true)
+                .create();
 
         //when
-        uploadFile(fileName, fileDestination, content, createDirectories);
+        uploadFile(command);
 
 
         //then
         assertFileExists("tmp/test/test.txt");
-        assertFileContain("tmp/test/test.txt", content);
+        assertFileContain("tmp/test/test.txt", command.getContent());
     }
 
     @Test
     @DisplayName("Can not upload new file when directories not exists and createDirectories flag is false")
     public void canNotUploadNewFileWhenDirectoriesNotExistsAndCreateDirectoriesFlagIsFalse() {
         //given
-        var createDirectories = false;
-        var content = "Test content";
-        var fileDestination = "test";
-        var fileName = "test.txt";
+        var command = buildUploadFileCommand("test.txt")
+                .withDestination(TEST_DIRECTORY.resolve("test").toString())
+                .withContent("Test content")
+                .withCreateDirectories(false)
+                .create();
 
         //when
-        assertThrows(RuntimeException.class, () -> uploadFile(fileName, fileDestination, content, createDirectories));
+        assertThrows(RuntimeException.class, () -> uploadFile(command));
 
 
         //then
@@ -57,38 +60,39 @@ public class FileTest extends FilesBasedTest {
     @DisplayName("Can create file object when file exists")
     public void canCreateFileWhenFileExists() {
         //given
-        var createDirectories = true;
-        var content = "Test content";
-        var fileDestination = "test";
-        var fileName = "test.txt";
-        uploadFile(fileName, fileDestination, content, createDirectories);
+        var command = buildUploadFileCommand("test.txt")
+                .withDestination(TEST_DIRECTORY.resolve("test").toString())
+                .withContent("Test content")
+                .withCreateDirectories(true)
+                .create();
+
+        uploadFile(command);
 
         //when
-        createFile(fileDestination);
+        createFile(command.getDestination());
 
         //then
         assertFileExists("tmp/test/test.txt");
-        assertFileContain("tmp/test/test.txt", content);
+        assertFileContain("tmp/test/test.txt", command.getContent());
     }
 
     @Test
     @DisplayName("Can not create file object when file not exists")
     public void canNotCreateFileObjectWhenFileNotExists() {
         //given
-        var fileDestination = "test";
 
         //when
-        assertThrows(RuntimeException.class, () -> createFile(fileDestination));
+        assertThrows(RuntimeException.class, () -> createFile(TEST_DIRECTORY.resolve("test")));
 
         //then
     }
 
-    private void uploadFile(String fileName, String fileDestination, String content, boolean createDirectories) {
-        File.upload(fileName, TEST_DIRECTORY.resolve(fileDestination).toString(), content, createDirectories);
+    private void uploadFile(UploadFileCommand command) {
+        File.upload(command);
     }
 
-    private void createFile(String fileDestination) {
-        resultFile = new File(TEST_DIRECTORY.resolve(fileDestination));
+    private void createFile(Path fileDestination) {
+        resultFile = new File(fileDestination);
     }
 
     private void assertFileExists(String fileDestination) {
@@ -99,13 +103,13 @@ public class FileTest extends FilesBasedTest {
         assertFalse(Files.exists(Path.of(fileDestination)));
     }
 
-    private void assertFileContain(String fileDestination, String expectedContent) {
+    private void assertFileContain(String fileDestination, byte[] expectedContent) {
         String fileContent;
         try {
             fileContent = Files.readString(Path.of(fileDestination));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        assertEquals(expectedContent, fileContent);
+        assertEquals(new String(expectedContent), fileContent);
     }
 }

@@ -12,24 +12,22 @@ public class File {
         this.fileDestination = fileDestination;
     }
 
-    public static File upload(String fileName, String fileDestination, String content, boolean createDirectories) {
-        Path destination = Path.of(fileDestination);
-        createDirectoriesIfNeeded(destination, createDirectories);
+    public static File upload(UploadFileCommand command) {
+        createDirectoriesIfNeeded(command);
 
         try {
-            destination = destination.resolve(Path.of(fileName));
-            Files.write(destination, content.getBytes());
+            Files.write(command.getFileName(), command.getContent());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return new File(destination);
+        return new File(command.getDestination());
     }
 
-    private static void createDirectoriesIfNeeded(Path fileDestination, boolean createDirectories) {
-        if (createDirectories) {
+    private static void createDirectoriesIfNeeded(UploadFileCommand command) {
+        if (command.isCreateDirectories()) {
             try {
-                Files.createDirectories(fileDestination);
+                Files.createDirectories(command.getDestination());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
