@@ -13,4 +13,7 @@ class Destination {
         return destination.resolve(fileName);
     }
 
+    Path getDestination() {
+        return destination;
+    }
 }
