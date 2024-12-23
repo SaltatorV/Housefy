@@ -27,6 +27,7 @@ abstract class FilesBasedTest {
             deleteDirectoryRecursively();
         } catch (IOException e) {
             LOGGER.error("Can not delete test directories: {} recursively.", testDirectory.toString());
+            throw new RuntimeException(e);
         }
     }
 
