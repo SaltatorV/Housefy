@@ -5,12 +5,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class File {
-
-    private String content;
     private Path fileDestination;
 
-    private File(String content, Path fileDestination) {
-        this.content = content;
+    public File(Path fileDestination) {
+        ensureFileExists(fileDestination);
         this.fileDestination = fileDestination;
     }
 
@@ -25,7 +23,7 @@ public class File {
             throw new RuntimeException(e);
         }
 
-        return new File(content, destination);
+        return new File(destination);
     }
 
     private static void createDirectoriesIfNeeded(Path fileDestination, boolean createDirectories) {
@@ -35,6 +33,12 @@ public class File {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    private void ensureFileExists(Path fileDestination) {
+        if (!Files.exists(fileDestination)) {
+            throw new RuntimeException("File: %s do not exists.".formatted(fileDestination));
         }
     }
 }
