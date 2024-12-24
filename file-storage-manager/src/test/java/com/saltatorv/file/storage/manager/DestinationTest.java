@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DestinationTest {
 
     Destination destination;
-    Path resultPath;
+    Destination resultDestination;
 
     @Test
     @DisplayName("Can resolve absolute destination properly")
@@ -45,12 +45,12 @@ public class DestinationTest {
     }
 
     private void resolve(String path) {
-        this.resultPath = destination.resolve(path);
+        this.resultDestination = destination.resolve(path);
     }
 
     private void assertPathIsEqualTo(String expectedPath) {
         expectedPath = expectedPath.replace("/", java.io.File.separator);
         expectedPath = expectedPath.replace("\"", java.io.File.separator);
-        assertEquals(expectedPath, resultPath.toString());
+        assertEquals(Path.of(expectedPath), resultDestination.getDestination());
     }
 }

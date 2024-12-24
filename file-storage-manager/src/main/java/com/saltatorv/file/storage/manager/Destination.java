@@ -9,8 +9,12 @@ class Destination {
         this.destination = Path.of(destination);
     }
 
-    Path resolve(String path) {
-        return destination.resolve(path);
+    Destination(Path destination) {
+        this.destination = destination;
+    }
+
+    Destination resolve(String path) {
+        return new Destination(destination.resolve(path));
     }
 
     Path getDestination() {
