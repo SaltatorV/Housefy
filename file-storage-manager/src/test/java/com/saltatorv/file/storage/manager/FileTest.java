@@ -80,9 +80,10 @@ public class FileTest extends FilesBasedTest {
     @DisplayName("Can not create file object when file not exists")
     public void canNotCreateFileObjectWhenFileNotExists() {
         //given
+        var destination = new Destination(TEST_DIRECTORY.resolve("test"));
 
         //when
-        assertThrows(RuntimeException.class, () -> createFile(TEST_DIRECTORY.resolve("test")));
+        assertThrows(RuntimeException.class, () -> createFile(destination));
 
         //then
     }
@@ -149,7 +150,7 @@ public class FileTest extends FilesBasedTest {
         resultFile = File.upload(command);
     }
 
-    private void createFile(Path fileDestination) {
+    private void createFile(Destination fileDestination) {
         resultFile = new File(fileDestination);
     }
 
