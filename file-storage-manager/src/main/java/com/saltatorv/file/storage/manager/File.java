@@ -34,6 +34,10 @@ public class File {
         }
     }
 
+    public <T> T read(FileContentReader<T> fileReader) {
+        return fileReader.read(fileDestination);
+    }
+
     public boolean delete() {
         try {
             Files.delete(fileDestination.getDestination());
