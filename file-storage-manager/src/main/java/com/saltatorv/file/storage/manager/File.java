@@ -9,6 +9,7 @@ public class File {
 
     public File(Path fileDestination) {
         ensureFileExists(fileDestination);
+        ensureDestinationPointToFile(fileDestination);
         this.fileDestination = fileDestination;
     }
 
@@ -21,7 +22,7 @@ public class File {
             throw new RuntimeException(e);
         }
 
-        return new File(command.getDestination());
+        return new File(command.getFileName());
     }
 
     private static void createDirectoriesIfNeeded(UploadFileCommand command) {
@@ -34,9 +35,24 @@ public class File {
         }
     }
 
+    public boolean delete() {
+        try {
+            Files.delete(fileDestination);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
     private void ensureFileExists(Path fileDestination) {
         if (!Files.exists(fileDestination)) {
             throw new RuntimeException("File: %s do not exists.".formatted(fileDestination));
+        }
+    }
+
+    private void ensureDestinationPointToFile(Path fileDestination) {
+        if (!Files.isRegularFile(fileDestination)) {
+            throw new RuntimeException("Destination: %s do not point to regular file.".formatted(fileDestination));
         }
     }
 }

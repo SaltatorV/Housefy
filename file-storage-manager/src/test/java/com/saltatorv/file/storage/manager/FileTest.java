@@ -58,7 +58,7 @@ public class FileTest extends FilesBasedTest {
 
     @Test
     @DisplayName("Can create file object when file exists")
-    public void canCreateFileWhenFileExists() {
+    public void canCreateFileObjectWhenFileExists() {
         //given
         var command = buildUploadFileCommand("test.txt")
                 .withDestination(TEST_DIRECTORY.resolve("test").toString())
@@ -69,7 +69,7 @@ public class FileTest extends FilesBasedTest {
         uploadFile(command);
 
         //when
-        createFile(command.getDestination());
+        createFile(command.getFileName());
 
         //then
         assertFileExists("tmp/test/test.txt");
@@ -87,12 +87,74 @@ public class FileTest extends FilesBasedTest {
         //then
     }
 
+    @Test
+    @DisplayName("Can not create file object when destination do not point to regular file")
+    public void canNotCreateFileObjectWhenDestinationDoNotPointToRegularFile() {
+        //given
+        var command = buildUploadFileCommand("test.txt")
+                .withDestination(TEST_DIRECTORY.resolve("test").toString())
+                .withContent("Test content")
+                .withCreateDirectories(true)
+                .create();
+
+        //when
+        assertThrows(RuntimeException.class, () -> createFile(command.getFileName()));
+
+        //then
+        assertFileNotExists("tmp/test/test.txt");
+    }
+
+    @Test
+    @DisplayName("Can delete file")
+    public void canDeleteFile() {
+        //given
+        var command = buildUploadFileCommand("test.txt")
+                .withDestination(TEST_DIRECTORY.resolve("test").toString())
+                .withContent("Test content")
+                .withCreateDirectories(true)
+                .create();
+
+        uploadFile(command);
+
+        //when
+        boolean deleteResult = deleteFile();
+
+        //then
+        assertTrue(deleteResult);
+        assertFileNotExists("tmp/test/test.txt");
+    }
+
+    @Test
+    @DisplayName("Can delete even if file do not exists")
+    public void canDeleteEvenIfFileDoNotExists() {
+        //given
+        var command = buildUploadFileCommand("test.txt")
+                .withDestination(TEST_DIRECTORY.resolve("test").toString())
+                .withContent("Test content")
+                .withCreateDirectories(true)
+                .create();
+
+        uploadFile(command);
+        deleteFile();
+
+        //when
+        boolean deleteResult = deleteFile();
+
+        //then
+        assertFalse(deleteResult);
+        assertFileNotExists("tmp/test/test.txt");
+    }
+
     private void uploadFile(UploadFileCommand command) {
-        File.upload(command);
+        resultFile = File.upload(command);
     }
 
     private void createFile(Path fileDestination) {
         resultFile = new File(fileDestination);
+    }
+
+    private boolean deleteFile() {
+        return resultFile.delete();
     }
 
     private void assertFileExists(String fileDestination) {
