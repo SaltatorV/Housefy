@@ -15,7 +15,7 @@ public class UploadFileCommand {
         this.createDirectories = createDirectories;
     }
 
-    Path getFileName() {
+    Destination getFileName() {
         return destination.resolve(fileName);
     }
 
