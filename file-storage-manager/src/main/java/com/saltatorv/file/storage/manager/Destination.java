@@ -2,22 +2,22 @@ package com.saltatorv.file.storage.manager;
 
 import java.nio.file.Path;
 
-class Destination {
+public class Destination {
     private final Path destination;
 
-    Destination(String destination) {
+    public Destination(String destination) {
         this.destination = Path.of(destination);
     }
 
-    Destination(Path destination) {
+    public Destination(Path destination) {
         this.destination = destination;
     }
 
-    Destination resolve(String path) {
+    public Destination resolve(String path) {
         return new Destination(destination.resolve(path));
     }
 
-    Path getDestination() {
+    public Path getDestination() {
         return destination;
     }
 }
