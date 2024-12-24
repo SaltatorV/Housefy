@@ -9,8 +9,8 @@ class Destination {
         this.destination = Path.of(destination);
     }
 
-    Path resolve(String fileName) {
-        return destination.resolve(fileName);
+    Path resolve(String path) {
+        return destination.resolve(path);
     }
 
     Path getDestination() {

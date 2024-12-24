@@ -44,8 +44,8 @@ public class DestinationTest {
         this.destination = new Destination(destination);
     }
 
-    private void resolve(String fileName) {
-        this.resultPath = destination.resolve(fileName);
+    private void resolve(String path) {
+        this.resultPath = destination.resolve(path);
     }
 
     private void assertPathIsEqualTo(String expectedPath) {
