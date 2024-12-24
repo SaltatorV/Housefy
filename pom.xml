@@ -23,6 +23,7 @@
 
         <lombok.version>1.18.36</lombok.version>
         <junit.version>5.11.4</junit.version>
+        <slf4j-api.version>2.0.16</slf4j-api.version>
     </properties>
 
     <packaging>pom</packaging>
@@ -59,6 +60,12 @@
             <artifactId>junit-jupiter-api</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
         </dependency>
     </dependencies>
 
