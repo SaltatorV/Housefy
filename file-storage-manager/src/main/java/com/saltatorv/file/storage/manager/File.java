@@ -1,7 +1,7 @@
 package com.saltatorv.file.storage.manager;
 
-import com.saltatorv.file.storage.manager.VO.Destination;
 import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.vo.Destination;
 
 import java.io.IOException;
 import java.nio.file.Files;

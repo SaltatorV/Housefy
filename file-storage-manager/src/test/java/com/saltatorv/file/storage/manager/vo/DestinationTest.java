@@ -1,5 +1,6 @@
-package com.saltatorv.file.storage.manager.VO;
+package com.saltatorv.file.storage.manager.vo;
 
+import com.saltatorv.file.storage.manager.vo.Destination;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

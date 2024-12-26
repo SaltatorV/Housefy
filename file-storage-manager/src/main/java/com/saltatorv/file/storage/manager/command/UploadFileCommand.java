@@ -1,8 +1,6 @@
 package com.saltatorv.file.storage.manager.command;
 
-import com.saltatorv.file.storage.manager.VO.Destination;
-
-import java.nio.file.Path;
+import com.saltatorv.file.storage.manager.vo.Destination;
 
 public class UploadFileCommand {
     private final String fileName;
