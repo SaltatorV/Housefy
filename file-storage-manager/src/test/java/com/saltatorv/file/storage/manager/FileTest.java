@@ -1,6 +1,7 @@
 package com.saltatorv.file.storage.manager;
 
 import com.saltatorv.file.storage.manager.VO.Destination;
+import com.saltatorv.file.storage.manager.command.UploadFileCommand;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static com.saltatorv.file.storage.manager.UploadFileCommandBuilder.buildUploadFileCommand;
+import static com.saltatorv.file.storage.manager.command.UploadFileCommandBuilder.buildUploadFileCommand;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileTest extends FilesBasedTest {

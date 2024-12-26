@@ -1,4 +1,4 @@
-package com.saltatorv.file.storage.manager;
+package com.saltatorv.file.storage.manager.command;
 
 import com.saltatorv.file.storage.manager.VO.Destination;
 

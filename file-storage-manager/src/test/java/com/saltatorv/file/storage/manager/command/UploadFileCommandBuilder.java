@@ -1,6 +1,6 @@
-package com.saltatorv.file.storage.manager;
+package com.saltatorv.file.storage.manager.command;
 
-class UploadFileCommandBuilder {
+public class UploadFileCommandBuilder {
     private String fileName;
     private String destination;
     private String content;
@@ -9,35 +9,35 @@ class UploadFileCommandBuilder {
     private UploadFileCommandBuilder() {
     }
 
-    static UploadFileCommandBuilder buildUploadFileCommand(String fileName) {
+    public static UploadFileCommandBuilder buildUploadFileCommand(String fileName) {
         UploadFileCommandBuilder builder = new UploadFileCommandBuilder();
         builder.withFileName(fileName);
         return builder;
     }
 
-    UploadFileCommandBuilder withFileName(String fileName) {
+    public UploadFileCommandBuilder withFileName(String fileName) {
         this.fileName = fileName;
         return this;
     }
 
-    UploadFileCommandBuilder withDestination(String destination) {
+    public UploadFileCommandBuilder withDestination(String destination) {
         this.destination = destination;
         return this;
     }
 
 
-    UploadFileCommandBuilder withContent(String content) {
+    public UploadFileCommandBuilder withContent(String content) {
         this.content = content;
         return this;
     }
 
 
-    UploadFileCommandBuilder withCreateDirectories(boolean createDirectories) {
+    public UploadFileCommandBuilder withCreateDirectories(boolean createDirectories) {
         this.createDirectories = createDirectories;
         return this;
     }
 
-    UploadFileCommand create() {
+    public UploadFileCommand create() {
         return new UploadFileCommand(fileName, destination, content.getBytes(), createDirectories);
     }
 }
