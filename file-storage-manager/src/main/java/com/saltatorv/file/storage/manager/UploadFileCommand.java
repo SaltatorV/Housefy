@@ -17,19 +17,19 @@ public class UploadFileCommand {
         this.createDirectories = createDirectories;
     }
 
-    Destination getFileName() {
+    public Destination getFileName() {
         return destination.resolve(fileName);
     }
 
-    Path getDestination() {
+    public Path getDestination() {
         return destination.getDestination();
     }
 
-    byte[] getContent() {
+    public byte[] getContent() {
         return content;
     }
 
-    boolean isCreateDirectories() {
+    public boolean isCreateDirectories() {
         return createDirectories;
     }
 }
