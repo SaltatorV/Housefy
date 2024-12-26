@@ -30,7 +30,7 @@ public class File {
     private static void createDirectoriesIfNeeded(UploadFileCommand command) {
         if (command.isCreateDirectories()) {
             try {
-                Files.createDirectories(command.getDestination());
+                Files.createDirectories(command.getDestination().getDestination());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

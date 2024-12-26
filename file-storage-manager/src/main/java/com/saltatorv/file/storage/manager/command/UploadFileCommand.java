@@ -21,8 +21,8 @@ public class UploadFileCommand {
         return destination.resolve(fileName);
     }
 
-    public Path getDestination() {
-        return destination.getDestination();
+    public Destination getDestination() {
+        return destination;
     }
 
     public byte[] getContent() {
