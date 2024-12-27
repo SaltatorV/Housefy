@@ -1,38 +1,38 @@
 package com.saltatorv.file.storage.manager.command;
 
-public class UploadFileCommandBuilder {
+public class UploadFileCommandAssembler {
     private String fileName;
     private String destination;
     private String content;
     private boolean createDirectories;
 
-    private UploadFileCommandBuilder() {
+    private UploadFileCommandAssembler() {
     }
 
-    public static UploadFileCommandBuilder buildUploadFileCommand(String fileName) {
-        UploadFileCommandBuilder builder = new UploadFileCommandBuilder();
+    public static UploadFileCommandAssembler buildUploadFileCommand(String fileName) {
+        UploadFileCommandAssembler builder = new UploadFileCommandAssembler();
         builder.withFileName(fileName);
         return builder;
     }
 
-    public UploadFileCommandBuilder withFileName(String fileName) {
+    public UploadFileCommandAssembler withFileName(String fileName) {
         this.fileName = fileName;
         return this;
     }
 
-    public UploadFileCommandBuilder withDestination(String destination) {
+    public UploadFileCommandAssembler withDestination(String destination) {
         this.destination = destination;
         return this;
     }
 
 
-    public UploadFileCommandBuilder withContent(String content) {
+    public UploadFileCommandAssembler withContent(String content) {
         this.content = content;
         return this;
     }
 
 
-    public UploadFileCommandBuilder withCreateDirectories(boolean createDirectories) {
+    public UploadFileCommandAssembler withCreateDirectories(boolean createDirectories) {
         this.createDirectories = createDirectories;
         return this;
     }

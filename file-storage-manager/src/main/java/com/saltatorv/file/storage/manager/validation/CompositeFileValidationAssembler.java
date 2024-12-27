@@ -3,15 +3,15 @@ package com.saltatorv.file.storage.manager.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompositeFileValidationBuilder {
+public class CompositeFileValidationAssembler {
 
     private List<FileValidationRule> fileValidationRules;
 
-    public CompositeFileValidationBuilder() {
+    public CompositeFileValidationAssembler() {
         fileValidationRules = new ArrayList<>();
     }
 
-    public CompositeFileValidationBuilder addFileValidationRule(FileValidationRule rule) {
+    public CompositeFileValidationAssembler addFileValidationRule(FileValidationRule rule) {
         fileValidationRules.add(rule);
         return this;
     }

@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static com.saltatorv.file.storage.manager.command.UploadFileCommandBuilder.buildUploadFileCommand;
+import static com.saltatorv.file.storage.manager.command.UploadFileCommandAssembler.buildUploadFileCommand;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileTest extends FilesBasedTest {

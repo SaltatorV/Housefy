@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 
-import static com.saltatorv.file.storage.manager.command.UploadFileCommandBuilder.buildUploadFileCommand;
+import static com.saltatorv.file.storage.manager.command.UploadFileCommandAssembler.buildUploadFileCommand;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
