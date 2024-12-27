@@ -25,8 +25,8 @@ public class CompositeFileValidationRuleTest {
                 .withCreateDirectories(true)
                 .create();
 
-        var firstRule = mock(FileValidationRule.class);
-        var secondRule = mock(FileValidationRule.class);
+        var firstRule = createDummyValidationRule();
+        var secondRule = createDummyValidationRule();
 
         createComposite(firstRule, secondRule);
 
@@ -53,8 +53,8 @@ public class CompositeFileValidationRuleTest {
                 .withCreateDirectories(true)
                 .create();
 
-        var firstRule = mock(FileValidationRule.class);
-        var secondRule = mock(FileValidationRule.class);
+        var firstRule = createDummyValidationRule();
+        var secondRule = createDummyValidationRule();
 
         doThrow(new RuntimeException("Validation failed"))
                 .when(firstRule)
@@ -73,6 +73,10 @@ public class CompositeFileValidationRuleTest {
         then(secondRule)
                 .should(times(0))
                 .validate(command);
+    }
+
+    private FileValidationRule createDummyValidationRule() {
+        return mock(FileValidationRule.class);
     }
 
     private void createComposite(FileValidationRule... rules) {
