@@ -1,6 +1,7 @@
 package com.saltatorv.file.storage.manager;
 
 import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.validation.FileValidationRule;
 import com.saltatorv.file.storage.manager.vo.Destination;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,9 @@ import java.nio.file.Path;
 
 import static com.saltatorv.file.storage.manager.command.UploadFileCommandAssembler.buildUploadFileCommand;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
 public class FileTest extends FilesBasedTest {
 
@@ -31,10 +35,13 @@ public class FileTest extends FilesBasedTest {
                 .withCreateDirectories(true)
                 .create();
 
+        var validationRule = createDummyValidationRule();
+
         //when
-        uploadFile(command);
+        uploadFile(command, validationRule);
 
         //then
+        assertValidationRuleWasCalledOnce(validationRule, command);
         assertFileExists("tmp/test/test.txt");
         assertFileContain("tmp/test/test.txt", command.getContent());
     }
@@ -49,10 +56,13 @@ public class FileTest extends FilesBasedTest {
                 .withCreateDirectories(false)
                 .create();
 
+        var validationRule = createDummyValidationRule();
+
         //when
-        assertThrows(RuntimeException.class, () -> uploadFile(command));
+        assertThrows(RuntimeException.class, () -> uploadFile(command, validationRule));
 
         //then
+        assertValidationRuleWasCalledOnce(validationRule, command);
         assertFileNotExists("tmp/test/test.txt");
     }
 
@@ -66,7 +76,7 @@ public class FileTest extends FilesBasedTest {
                 .withCreateDirectories(true)
                 .create();
 
-        uploadFile(command);
+        uploadFile(command, createDummyValidationRule());
 
         //when
         createFile(command.getFileName());
@@ -115,7 +125,7 @@ public class FileTest extends FilesBasedTest {
                 .withCreateDirectories(true)
                 .create();
 
-        uploadFile(command);
+        uploadFile(command, createDummyValidationRule());
 
         //when
         var deleteResult = deleteFile();
@@ -135,7 +145,7 @@ public class FileTest extends FilesBasedTest {
                 .withCreateDirectories(true)
                 .create();
 
-        uploadFile(command);
+        uploadFile(command, createDummyValidationRule());
         deleteFile();
 
         //when
@@ -146,8 +156,12 @@ public class FileTest extends FilesBasedTest {
         assertFileNotExists("tmp/test/test.txt");
     }
 
-    private void uploadFile(UploadFileCommand command) {
-        resultFile = File.upload(command);
+    private FileValidationRule createDummyValidationRule() {
+        return mock(FileValidationRule.class);
+    }
+
+    private void uploadFile(UploadFileCommand command, FileValidationRule validationRule) {
+        resultFile = File.upload(command, validationRule);
     }
 
     private void createFile(Destination fileDestination) {
@@ -174,5 +188,11 @@ public class FileTest extends FilesBasedTest {
             throw new RuntimeException(e);
         }
         assertEquals(new String(expectedContent), fileContent);
+    }
+
+    private void assertValidationRuleWasCalledOnce(FileValidationRule rule, UploadFileCommand command) {
+        then(rule)
+                .should(times(1))
+                .validate(command);
     }
 }

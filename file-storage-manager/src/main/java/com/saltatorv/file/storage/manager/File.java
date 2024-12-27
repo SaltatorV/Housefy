@@ -1,6 +1,7 @@
 package com.saltatorv.file.storage.manager;
 
 import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.validation.FileValidationRule;
 import com.saltatorv.file.storage.manager.vo.Destination;
 
 import java.io.IOException;
@@ -15,7 +16,8 @@ public class File {
         this.fileDestination = fileDestination;
     }
 
-    public static File upload(UploadFileCommand command) {
+    public static File upload(UploadFileCommand command, FileValidationRule validationRule) {
+        validationRule.validate(command);
         createDirectoriesIfNeeded(command);
 
         try {
