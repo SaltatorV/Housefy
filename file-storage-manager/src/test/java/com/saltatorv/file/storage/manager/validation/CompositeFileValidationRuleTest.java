@@ -34,13 +34,8 @@ public class CompositeFileValidationRuleTest {
         validate(command);
 
         //then
-        then(firstRule)
-                .should(times(1))
-                .validate(command);
-
-        then(secondRule)
-                .should(times(1))
-                .validate(command);
+        assertValidationRuleWasCalledOnce(firstRule, command);
+        assertValidationRuleWasCalledOnce(secondRule, command);
     }
 
     @Test
@@ -66,13 +61,8 @@ public class CompositeFileValidationRuleTest {
         assertThrows(RuntimeException.class, () -> validate(command));
 
         //then
-        then(firstRule)
-                .should(times(1))
-                .validate(command);
-
-        then(secondRule)
-                .should(times(0))
-                .validate(command);
+        assertValidationRuleWasCalledOnce(firstRule, command);
+        assertValidationRuleWasNotCalled(secondRule, command);
     }
 
     private FileValidationRule createDummyValidationRule() {
@@ -85,5 +75,19 @@ public class CompositeFileValidationRuleTest {
 
     private void validate(UploadFileCommand command) {
         compositeRule.validate(command);
+    }
+
+    private void assertValidationRuleWasCalledOnce(FileValidationRule rule, UploadFileCommand command) {
+        assertValidationRuleWasCalledNTimes(rule, command, 1);
+    }
+
+    private void assertValidationRuleWasNotCalled(FileValidationRule rule, UploadFileCommand command) {
+        assertValidationRuleWasCalledNTimes(rule, command, 0);
+    }
+
+    private void assertValidationRuleWasCalledNTimes(FileValidationRule rule, UploadFileCommand command, int times) {
+        then(rule)
+                .should(times(times))
+                .validate(command);
     }
 }
