@@ -34,7 +34,6 @@ public class FileTest extends FilesBasedTest {
         //when
         uploadFile(command);
 
-
         //then
         assertFileExists("tmp/test/test.txt");
         assertFileContain("tmp/test/test.txt", command.getContent());
@@ -52,7 +51,6 @@ public class FileTest extends FilesBasedTest {
 
         //when
         assertThrows(RuntimeException.class, () -> uploadFile(command));
-
 
         //then
         assertFileNotExists("tmp/test/test.txt");
@@ -120,7 +118,7 @@ public class FileTest extends FilesBasedTest {
         uploadFile(command);
 
         //when
-        boolean deleteResult = deleteFile();
+        var deleteResult = deleteFile();
 
         //then
         assertTrue(deleteResult);
@@ -141,7 +139,7 @@ public class FileTest extends FilesBasedTest {
         deleteFile();
 
         //when
-        boolean deleteResult = deleteFile();
+        var deleteResult = deleteFile();
 
         //then
         assertFalse(deleteResult);

@@ -23,7 +23,7 @@ public class UploadFileCommand {
     }
 
     public byte[] getContent() {
-        return content;
+        return content.clone();
     }
 
 }
