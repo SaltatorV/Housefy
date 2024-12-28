@@ -9,8 +9,12 @@ public class ExtensionListAssembler {
 
     private List<Extension> extensions;
 
-    public ExtensionListAssembler() {
+    private ExtensionListAssembler() {
         extensions = new ArrayList<>();
+    }
+
+    public static ExtensionListAssembler buildExtensions() {
+        return new ExtensionListAssembler();
     }
 
     public ExtensionListAssembler addExtension(String extension) {
