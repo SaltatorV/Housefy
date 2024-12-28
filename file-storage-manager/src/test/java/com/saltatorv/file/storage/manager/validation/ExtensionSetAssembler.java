@@ -17,8 +17,8 @@ public class ExtensionSetAssembler {
         return new ExtensionSetAssembler();
     }
 
-    public ExtensionSetAssembler addExtension(String extension) {
-        extensions.add(new Extension(extension));
+    public ExtensionSetAssembler addExtension(Extension extension) {
+        extensions.add(extension);
         return this;
     }
 
