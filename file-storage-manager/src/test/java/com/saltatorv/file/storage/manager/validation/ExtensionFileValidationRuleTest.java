@@ -4,6 +4,8 @@ import com.saltatorv.file.storage.manager.command.UploadFileCommand;
 import com.saltatorv.file.storage.manager.vo.Extension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.file.Path;
 import java.util.Set;
@@ -16,6 +18,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 
+@ExtendWith(MockitoExtension.class)
 public class ExtensionFileValidationRuleTest {
 
     private ExtensionFileValidationRule validationRule;
@@ -87,7 +90,6 @@ public class ExtensionFileValidationRuleTest {
 
         createValidationRule(extensions);
 
-
         //when
         validateCommand(command);
 
@@ -136,10 +138,6 @@ public class ExtensionFileValidationRuleTest {
 
     private void assertExtensionWasCheckedOnce(Extension extension, Path fileName) {
         assertExtensionWasCheckedNTimes(extension, fileName, 1);
-    }
-
-    private void assertExtensionWasNotChecked(Extension extension, Path fileName) {
-        assertExtensionWasCheckedNTimes(extension, fileName, 0);
     }
 
     private void assertExtensionWasCheckedNTimes(Extension extension, Path fileName, int expectedTimes) {

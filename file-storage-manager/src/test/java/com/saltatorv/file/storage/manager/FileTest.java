@@ -5,6 +5,8 @@ import com.saltatorv.file.storage.manager.validation.FileValidationRule;
 import com.saltatorv.file.storage.manager.vo.Destination;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,6 +18,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 
+@ExtendWith(MockitoExtension.class)
 public class FileTest extends FilesBasedTest {
 
     private static final Path TEST_DIRECTORY = Path.of("tmp");
