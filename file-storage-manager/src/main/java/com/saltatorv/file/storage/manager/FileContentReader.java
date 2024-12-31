@@ -1,7 +1,7 @@
 package com.saltatorv.file.storage.manager;
 
-import com.saltatorv.file.storage.manager.vo.Destination;
+import com.saltatorv.file.storage.manager.vo.FileName;
 
 public interface FileContentReader<T> {
-    T read(Destination fileDestination);
+    T read(FileName fileName);
 }

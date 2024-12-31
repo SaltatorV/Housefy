@@ -1,6 +1,6 @@
 package com.saltatorv.file.storage.manager.command;
 
-import com.saltatorv.file.storage.manager.vo.Destination;
+import com.saltatorv.file.storage.manager.vo.FileName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +16,7 @@ public class UploadFileCommandTest {
     @DisplayName("Can get content copy")
     public void canGetContentCopy() {
         //given
-        var command = buildUploadFileCommand("test.txt")
-                .withDestination("/tmp")
+        var command = buildUploadFileCommand("test/test.txt")
                 .withContent("Test content")
                 .withCreateDirectories(true)
                 .create();
@@ -34,8 +33,7 @@ public class UploadFileCommandTest {
     @DisplayName("Can not modify content")
     public void canNotModifyContent() {
         //given
-        var command = buildUploadFileCommand("test.txt")
-                .withDestination("/tmp")
+        var command = buildUploadFileCommand("test/test.txt")
                 .withContent("Test content")
                 .withCreateDirectories(true)
                 .create();
@@ -53,8 +51,7 @@ public class UploadFileCommandTest {
     @DisplayName("Can get resolved file name")
     public void canGetResolvedFileName() {
         //given
-        var command = buildUploadFileCommand("test.txt")
-                .withDestination("/tmp")
+        var command = buildUploadFileCommand("test/test.txt")
                 .withContent("Test content")
                 .withCreateDirectories(true)
                 .create();
@@ -63,10 +60,10 @@ public class UploadFileCommandTest {
         var fileName = command.getFileName();
 
         //then
-        asserFileNameIsEqualTo("/tmp/test.txt", fileName);
+        asserFileNameIsEqualTo("test/test.txt", fileName);
     }
 
-    private void asserFileNameIsEqualTo(String expectedFileName, Destination actualFileName) {
+    private void asserFileNameIsEqualTo(String expectedFileName, FileName actualFileName) {
         expectedFileName = expectedFileName.replace("/", java.io.File.separator);
         expectedFileName = expectedFileName.replace("\"", java.io.File.separator);
         assertEquals(Path.of(expectedFileName), actualFileName.getDestination());

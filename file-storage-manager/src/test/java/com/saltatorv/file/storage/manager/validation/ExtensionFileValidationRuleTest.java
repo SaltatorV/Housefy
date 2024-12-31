@@ -40,8 +40,7 @@ public class ExtensionFileValidationRuleTest {
     @DisplayName("Can successfully validate upload file command")
     public void canSuccessfullyValidateUploadFileCommand() {
         //given
-        var command = buildUploadFileCommand("test.txt")
-                .withDestination("/test")
+        var command = buildUploadFileCommand("test/test.txt")
                 .withContent("Test content")
                 .withCreateDirectories(true)
                 .create();
@@ -68,8 +67,7 @@ public class ExtensionFileValidationRuleTest {
     @DisplayName("Can successfully validate upload file command when rule contain multiple extensions and only one is valid")
     public void canSuccessfullyValidateUploadFileCommandWhenRuleContainMultipleExtensionsAndOnlyOneIsValid() {
         //given
-        var command = buildUploadFileCommand("test.txt")
-                .withDestination("/test")
+        var command = buildUploadFileCommand("test/test.txt")
                 .withContent("Test content")
                 .withCreateDirectories(true)
                 .create();
@@ -102,8 +100,7 @@ public class ExtensionFileValidationRuleTest {
     @DisplayName("Can throw exception when validation fail")
     public void canThrowExceptionWhenValidationFail() {
         //given
-        var command = buildUploadFileCommand("img.png")
-                .withDestination("/test")
+        var command = buildUploadFileCommand("test/img.png")
                 .withContent("[[255, 255, 255], [128, 128, 128], ...]")
                 .withCreateDirectories(true).create();
 

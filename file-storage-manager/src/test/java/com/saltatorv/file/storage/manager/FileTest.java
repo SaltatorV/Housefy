@@ -2,7 +2,7 @@ package com.saltatorv.file.storage.manager;
 
 import com.saltatorv.file.storage.manager.command.UploadFileCommand;
 import com.saltatorv.file.storage.manager.validation.FileValidationRule;
-import com.saltatorv.file.storage.manager.vo.Destination;
+import com.saltatorv.file.storage.manager.vo.FileName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,8 +32,7 @@ public class FileTest extends FilesBasedTest {
     @DisplayName("Can upload new file")
     public void canUploadNewFile() {
         //given
-        var command = buildUploadFileCommand("test.txt")
-                .withDestination(TEST_DIRECTORY.resolve("test").toString())
+        var command = buildUploadFileCommand(TEST_DIRECTORY.resolve("test.txt"))
                 .withContent("Test content")
                 .withCreateDirectories(true)
                 .create();
@@ -45,16 +44,15 @@ public class FileTest extends FilesBasedTest {
 
         //then
         assertValidationRuleWasCalledOnce(validationRule, command);
-        assertFileExists("tmp/test/test.txt");
-        assertFileContain("tmp/test/test.txt", command.getContent());
+        assertFileExists("tmp/test.txt");
+        assertFileContain("tmp/test.txt", command.getContent());
     }
 
     @Test
     @DisplayName("Can not upload new file when directories not exists and createDirectories flag is false")
     public void canNotUploadNewFileWhenDirectoriesNotExistsAndCreateDirectoriesFlagIsFalse() {
         //given
-        var command = buildUploadFileCommand("test.txt")
-                .withDestination(TEST_DIRECTORY.resolve("test").toString())
+        var command = buildUploadFileCommand(TEST_DIRECTORY.resolve("test"))
                 .withContent("Test content")
                 .withCreateDirectories(false)
                 .create();
@@ -73,8 +71,7 @@ public class FileTest extends FilesBasedTest {
     @DisplayName("Can create file object when file exists")
     public void canCreateFileObjectWhenFileExists() {
         //given
-        var command = buildUploadFileCommand("test.txt")
-                .withDestination(TEST_DIRECTORY.resolve("test").toString())
+        var command = buildUploadFileCommand(TEST_DIRECTORY.resolve("test.txt"))
                 .withContent("Test content")
                 .withCreateDirectories(true)
                 .create();
@@ -85,15 +82,15 @@ public class FileTest extends FilesBasedTest {
         createFile(command.getFileName());
 
         //then
-        assertFileExists("tmp/test/test.txt");
-        assertFileContain("tmp/test/test.txt", command.getContent());
+        assertFileExists("tmp/test.txt");
+        assertFileContain("tmp/test.txt", command.getContent());
     }
 
     @Test
     @DisplayName("Can not create file object when file not exists")
     public void canNotCreateFileObjectWhenFileNotExists() {
         //given
-        var destination = new Destination(TEST_DIRECTORY.resolve("test"));
+        var destination = new FileName(TEST_DIRECTORY.resolve("test"));
 
         //when
         assertThrows(RuntimeException.class, () -> createFile(destination));
@@ -105,8 +102,7 @@ public class FileTest extends FilesBasedTest {
     @DisplayName("Can not create file object when destination do not point to regular file")
     public void canNotCreateFileObjectWhenDestinationDoNotPointToRegularFile() {
         //given
-        var command = buildUploadFileCommand("test.txt")
-                .withDestination(TEST_DIRECTORY.resolve("test").toString())
+        var command = buildUploadFileCommand(TEST_DIRECTORY.resolve("test"))
                 .withContent("Test content")
                 .withCreateDirectories(true)
                 .create();
@@ -115,15 +111,14 @@ public class FileTest extends FilesBasedTest {
         assertThrows(RuntimeException.class, () -> createFile(command.getFileName()));
 
         //then
-        assertFileNotExists("tmp/test/test.txt");
+        assertFileNotExists("tmp/test.txt");
     }
 
     @Test
     @DisplayName("Can delete file")
     public void canDeleteFile() {
         //given
-        var command = buildUploadFileCommand("test.txt")
-                .withDestination(TEST_DIRECTORY.resolve("test").toString())
+        var command = buildUploadFileCommand(TEST_DIRECTORY.resolve("test.txt"))
                 .withContent("Test content")
                 .withCreateDirectories(true)
                 .create();
@@ -142,8 +137,7 @@ public class FileTest extends FilesBasedTest {
     @DisplayName("Can delete even if file do not exists")
     public void canDeleteEvenIfFileDoNotExists() {
         //given
-        var command = buildUploadFileCommand("test.txt")
-                .withDestination(TEST_DIRECTORY.resolve("test").toString())
+        var command = buildUploadFileCommand(TEST_DIRECTORY.resolve("test.txt"))
                 .withContent("Test content")
                 .withCreateDirectories(true)
                 .create();
@@ -156,7 +150,7 @@ public class FileTest extends FilesBasedTest {
 
         //then
         assertFalse(deleteResult);
-        assertFileNotExists("tmp/test/test.txt");
+        assertFileNotExists("tmp/test.txt");
     }
 
     private FileValidationRule createDummyValidationRule() {
@@ -167,8 +161,8 @@ public class FileTest extends FilesBasedTest {
         resultFile = File.upload(command, validationRule);
     }
 
-    private void createFile(Destination fileDestination) {
-        resultFile = new File(fileDestination);
+    private void createFile(FileName fileName) {
+        resultFile = new File(fileName);
     }
 
     private boolean deleteFile() {

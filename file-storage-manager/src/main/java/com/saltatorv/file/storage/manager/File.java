@@ -2,18 +2,18 @@ package com.saltatorv.file.storage.manager;
 
 import com.saltatorv.file.storage.manager.command.UploadFileCommand;
 import com.saltatorv.file.storage.manager.validation.FileValidationRule;
-import com.saltatorv.file.storage.manager.vo.Destination;
+import com.saltatorv.file.storage.manager.vo.FileName;
 
 import java.io.IOException;
 import java.nio.file.Files;
 
 public class File {
-    private Destination fileDestination;
+    private FileName fileName;
 
-    public File(Destination fileDestination) {
-        ensureFileExists(fileDestination);
-        ensureDestinationPointToFile(fileDestination);
-        this.fileDestination = fileDestination;
+    public File(FileName fileName) {
+        ensureFileExists(fileName);
+        ensureDestinationPointToFile(fileName);
+        this.fileName = fileName;
     }
 
     public static File upload(UploadFileCommand command, FileValidationRule validationRule) {
@@ -32,7 +32,7 @@ public class File {
     private static void createDirectoriesIfNeeded(UploadFileCommand command) {
         if (command.isCreateDirectories()) {
             try {
-                Files.createDirectories(command.getDestination().getDestination());
+                Files.createDirectories(command.getFileName().getParent());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -40,27 +40,27 @@ public class File {
     }
 
     public <T> T read(FileContentReader<T> fileReader) {
-        return fileReader.read(fileDestination);
+        return fileReader.read(fileName);
     }
 
     public boolean delete() {
         try {
-            Files.delete(fileDestination.getDestination());
+            Files.delete(fileName.getDestination());
             return true;
         } catch (IOException e) {
             return false;
         }
     }
 
-    private void ensureFileExists(Destination fileDestination) {
-        if (!Files.exists(fileDestination.getDestination())) {
-            throw new RuntimeException("File: %s do not exists.".formatted(fileDestination));
+    private void ensureFileExists(FileName fileName) {
+        if (!Files.exists(fileName.getDestination())) {
+            throw new RuntimeException("File: %s do not exists.".formatted(fileName));
         }
     }
 
-    private void ensureDestinationPointToFile(Destination fileDestination) {
-        if (!Files.isRegularFile(fileDestination.getDestination())) {
-            throw new RuntimeException("Destination: %s do not point to regular file.".formatted(fileDestination));
+    private void ensureDestinationPointToFile(FileName fileName) {
+        if (!Files.isRegularFile(fileName.getDestination())) {
+            throw new RuntimeException("Destination: %s do not point to regular file.".formatted(fileName));
         }
     }
 }

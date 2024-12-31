@@ -22,8 +22,7 @@ public class CompositeFileValidationRuleTest {
     @DisplayName("Can validate command by every validation rule")
     public void canValidateCommandByEveryValidationRule() {
         //given
-        var command = buildUploadFileCommand("test.txt")
-                .withDestination("/tmp")
+        var command = buildUploadFileCommand("test/test.txt")
                 .withContent("Test content")
                 .withCreateDirectories(true)
                 .create();
@@ -45,8 +44,7 @@ public class CompositeFileValidationRuleTest {
     @DisplayName("Can break validation loop when one validation fail")
     public void canBreakValidationLoopWhenOneValidationFail() {
         //given
-        var command = buildUploadFileCommand("test.txt")
-                .withDestination("/tmp")
+        var command = buildUploadFileCommand("test/test.txt")
                 .withContent("Test content")
                 .withCreateDirectories(true)
                 .create();
