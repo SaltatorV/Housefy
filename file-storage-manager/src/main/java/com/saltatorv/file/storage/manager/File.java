@@ -16,7 +16,7 @@ public class File {
         this.fileName = fileName;
     }
 
-    public static File upload(UploadFileCommand command, FileValidationRule validationRule) {
+    static File upload(UploadFileCommand command, FileValidationRule validationRule) {
         validationRule.validate(command);
         createDirectoriesIfNeeded(command);
 
