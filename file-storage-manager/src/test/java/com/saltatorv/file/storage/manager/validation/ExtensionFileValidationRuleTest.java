@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.nio.file.Path;
 import java.util.Set;
 
-import static com.saltatorv.file.storage.manager.command.UploadFileCommandAssembler.buildUploadFileCommand;
+import static com.saltatorv.file.storage.manager.command.UploadFileCommandObjectMother.uploadTextFileCommand;
 import static com.saltatorv.file.storage.manager.validation.ExtensionSetAssembler.buildExtensions;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
@@ -40,14 +40,11 @@ public class ExtensionFileValidationRuleTest {
     @DisplayName("Can successfully validate upload file command")
     public void canSuccessfullyValidateUploadFileCommand() {
         //given
-        var command = buildUploadFileCommand("test/test.txt")
-                .withContent("Test content")
-                .withCreateDirectories(true)
-                .create();
+        var command = uploadTextFileCommand();
 
         var extension = createDummyExtension();
 
-        given(extension.isIncludedIn(command.getFileName().getDestination()))
+        given(extension.isIncludedIn(command.getFileName()))
                 .willReturn(true);
 
         var extensions = buildExtensions()
@@ -60,25 +57,22 @@ public class ExtensionFileValidationRuleTest {
         validateCommand(command);
 
         //then
-        assertExtensionWasCheckedOnce(extension, command.getFileName().getDestination());
+        assertExtensionWasCheckedOnce(extension, command.getFileName());
     }
 
     @Test
     @DisplayName("Can successfully validate upload file command when rule contain multiple extensions and only one is valid")
     public void canSuccessfullyValidateUploadFileCommandWhenRuleContainMultipleExtensionsAndOnlyOneIsValid() {
         //given
-        var command = buildUploadFileCommand("test/test.txt")
-                .withContent("Test content")
-                .withCreateDirectories(true)
-                .create();
+        var command = uploadTextFileCommand();
 
         var first = createDummyExtension();
         var second = createDummyExtension();
 
-        given(first.isIncludedIn(command.getFileName().getDestination()))
+        given(first.isIncludedIn(command.getFileName()))
                 .willReturn(false);
 
-        given(second.isIncludedIn(command.getFileName().getDestination()))
+        given(second.isIncludedIn(command.getFileName()))
                 .willReturn(true);
 
         var extensions = buildExtensions()
@@ -92,21 +86,19 @@ public class ExtensionFileValidationRuleTest {
         validateCommand(command);
 
         //then
-        assertExtensionWasCheckedOnce(first, command.getFileName().getDestination());
-        assertExtensionWasCheckedOnce(second, command.getFileName().getDestination());
+        assertExtensionWasCheckedOnce(first, command.getFileName());
+        assertExtensionWasCheckedOnce(second, command.getFileName());
     }
 
     @Test
     @DisplayName("Can throw exception when validation fail")
     public void canThrowExceptionWhenValidationFail() {
         //given
-        var command = buildUploadFileCommand("test/img.png")
-                .withContent("[[255, 255, 255], [128, 128, 128], ...]")
-                .withCreateDirectories(true).create();
+        var command = uploadTextFileCommand();
 
         var extension = createDummyExtension();
 
-        given(extension.isIncludedIn(command.getFileName().getDestination()))
+        given(extension.isIncludedIn(command.getFileName()))
                 .willReturn(false);
 
         var extensions = buildExtensions()

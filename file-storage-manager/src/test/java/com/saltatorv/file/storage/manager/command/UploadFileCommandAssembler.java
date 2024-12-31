@@ -1,44 +1,56 @@
 package com.saltatorv.file.storage.manager.command;
 
-import com.saltatorv.file.storage.manager.vo.FileName;
-
 import java.nio.file.Path;
 
-public class UploadFileCommandAssembler {
+import static com.saltatorv.file.storage.manager.command.UploadFileCommandObjectMother.uploadTextFileCommand;
+
+public class UploadFileCommandAssembler implements UploadFileCommandDefaultValue {
     private Path fileName;
-    private String destination;
-    private String content;
+    private byte[] content;
     private boolean createDirectories;
 
     private UploadFileCommandAssembler() {
     }
 
-    public static UploadFileCommandAssembler buildUploadFileCommand(Path fileName) {
-        UploadFileCommandAssembler builder = new UploadFileCommandAssembler();
-        builder.withFileName(fileName);
-        return builder;
+    public static UploadFileCommandDefaultValue buildUploadFileCommand() {
+        return new UploadFileCommandAssembler();
     }
 
-    public static UploadFileCommandAssembler buildUploadFileCommand(String fileName) {
-        return buildUploadFileCommand(Path.of(fileName));
+    @Override
+    public UploadFileCommandAssembler uploadTextFileAsDefault() {
+        UploadFileCommand defaultValue = uploadTextFileCommand();
+        this.fileName = defaultValue.getFileName();
+        this.content = defaultValue.getContent();
+        this.createDirectories = defaultValue.isCreateDirectories();
+        return this;
     }
 
-    public UploadFileCommandAssembler withFileName(Path fileName) {
+    public UploadFileCommandAssembler butWithFileName(Path fileName) {
         this.fileName = fileName;
         return this;
     }
 
-    public UploadFileCommandAssembler withContent(String content) {
-        this.content = content;
+    public UploadFileCommandAssembler butWithFileName(String fileName) {
+        this.fileName = Path.of(fileName);
         return this;
     }
 
-    public UploadFileCommandAssembler withCreateDirectories(boolean createDirectories) {
-        this.createDirectories = createDirectories;
+    public UploadFileCommandAssembler butWithContent(String content) {
+        this.content = content.getBytes();
+        return this;
+    }
+
+    public UploadFileCommandAssembler shouldCreateDirectories() {
+        this.createDirectories = true;
+        return this;
+    }
+
+    public UploadFileCommandAssembler skipDirectoryCreation() {
+        this.createDirectories = false;
         return this;
     }
 
     public UploadFileCommand create() {
-        return new UploadFileCommand(new FileName(fileName), content.getBytes(), createDirectories);
+        return new UploadFileCommand(fileName, content, createDirectories);
     }
 }

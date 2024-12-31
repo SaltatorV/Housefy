@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static com.saltatorv.file.storage.manager.command.UploadFileCommandAssembler.buildUploadFileCommand;
+import static com.saltatorv.file.storage.manager.command.UploadFileCommandObjectMother.uploadTextFileCommand;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
@@ -22,10 +22,7 @@ public class CompositeFileValidationRuleTest {
     @DisplayName("Can validate command by every validation rule")
     public void canValidateCommandByEveryValidationRule() {
         //given
-        var command = buildUploadFileCommand("test/test.txt")
-                .withContent("Test content")
-                .withCreateDirectories(true)
-                .create();
+        var command = uploadTextFileCommand();
 
         var firstRule = createDummyValidationRule();
         var secondRule = createDummyValidationRule();
@@ -44,10 +41,7 @@ public class CompositeFileValidationRuleTest {
     @DisplayName("Can break validation loop when one validation fail")
     public void canBreakValidationLoopWhenOneValidationFail() {
         //given
-        var command = buildUploadFileCommand("test/test.txt")
-                .withContent("Test content")
-                .withCreateDirectories(true)
-                .create();
+        var command = uploadTextFileCommand();
 
         var firstRule = createDummyValidationRule();
         var secondRule = createDummyValidationRule();

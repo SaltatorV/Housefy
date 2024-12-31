@@ -23,7 +23,7 @@ public class ExtensionFileValidationRule implements FileValidationRule {
     public void validate(UploadFileCommand command) {
         extensions
                 .stream()
-                .filter(extension -> extension.isIncludedIn(command.getFileName().getDestination()))
+                .filter(extension -> extension.isIncludedIn(command.getFileName()))
                 .findAny()
                 .orElseThrow(() -> new RuntimeException("File contain invalid extension"));
     }

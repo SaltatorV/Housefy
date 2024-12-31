@@ -2,15 +2,15 @@ package com.saltatorv.file.storage.manager;
 
 import com.saltatorv.file.storage.manager.command.UploadFileCommand;
 import com.saltatorv.file.storage.manager.validation.FileValidationRule;
-import com.saltatorv.file.storage.manager.vo.FileName;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class File {
-    private FileName fileName;
+    private Path fileName;
 
-    public File(FileName fileName) {
+    public File(Path fileName) {
         ensureFileExists(fileName);
         ensureDestinationPointToFile(fileName);
         this.fileName = fileName;
@@ -21,7 +21,7 @@ public class File {
         createDirectoriesIfNeeded(command);
 
         try {
-            Files.write(command.getFileName().getDestination(), command.getContent());
+            Files.write(command.getFileName(), command.getContent());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -45,21 +45,21 @@ public class File {
 
     public boolean delete() {
         try {
-            Files.delete(fileName.getDestination());
+            Files.delete(fileName);
             return true;
         } catch (IOException e) {
             return false;
         }
     }
 
-    private void ensureFileExists(FileName fileName) {
-        if (!Files.exists(fileName.getDestination())) {
+    private void ensureFileExists(Path fileName) {
+        if (!Files.exists(fileName)) {
             throw new RuntimeException("File: %s do not exists.".formatted(fileName));
         }
     }
 
-    private void ensureDestinationPointToFile(FileName fileName) {
-        if (!Files.isRegularFile(fileName.getDestination())) {
+    private void ensureDestinationPointToFile(Path fileName) {
+        if (!Files.isRegularFile(fileName)) {
             throw new RuntimeException("Destination: %s do not point to regular file.".formatted(fileName));
         }
     }

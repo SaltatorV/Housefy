@@ -1,7 +1,8 @@
 package com.saltatorv.file.storage.manager;
 
-import com.saltatorv.file.storage.manager.vo.FileName;
+
+import java.nio.file.Path;
 
 public interface FileContentReader<T> {
-    T read(FileName fileName);
+    T read(Path fileName);
 }

@@ -1,12 +1,9 @@
 package com.saltatorv.file.storage.manager.command;
 
-import com.saltatorv.file.storage.manager.vo.FileName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Path;
-
-import static com.saltatorv.file.storage.manager.command.UploadFileCommandAssembler.buildUploadFileCommand;
+import static com.saltatorv.file.storage.manager.command.UploadFileCommandObjectMother.uploadTextFileCommand;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -16,14 +13,10 @@ public class UploadFileCommandTest {
     @DisplayName("Can get content copy")
     public void canGetContentCopy() {
         //given
-        var command = buildUploadFileCommand("test/test.txt")
-                .withContent("Test content")
-                .withCreateDirectories(true)
-                .create();
+        var command = uploadTextFileCommand();
 
         //when
         var content = command.getContent();
-
 
         //then
         assertContentsAreEqual(content, command.getContent());
@@ -33,40 +26,13 @@ public class UploadFileCommandTest {
     @DisplayName("Can not modify content")
     public void canNotModifyContent() {
         //given
-        var command = buildUploadFileCommand("test/test.txt")
-                .withContent("Test content")
-                .withCreateDirectories(true)
-                .create();
-
+        var command = uploadTextFileCommand();
         //when
         var content = command.getContent();
         modifyFirstElementOfArray(content);
 
-
         //then
         assertContentsAreNotEqual(content, command.getContent());
-    }
-
-    @Test
-    @DisplayName("Can get resolved file name")
-    public void canGetResolvedFileName() {
-        //given
-        var command = buildUploadFileCommand("test/test.txt")
-                .withContent("Test content")
-                .withCreateDirectories(true)
-                .create();
-
-        //when
-        var fileName = command.getFileName();
-
-        //then
-        asserFileNameIsEqualTo("test/test.txt", fileName);
-    }
-
-    private void asserFileNameIsEqualTo(String expectedFileName, FileName actualFileName) {
-        expectedFileName = expectedFileName.replace("/", java.io.File.separator);
-        expectedFileName = expectedFileName.replace("\"", java.io.File.separator);
-        assertEquals(Path.of(expectedFileName), actualFileName.getDestination());
     }
 
     private void modifyFirstElementOfArray(byte[] content) {
