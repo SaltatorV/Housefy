@@ -5,10 +5,10 @@ import com.saltatorv.file.storage.manager.vo.Extension;
 
 import java.util.Set;
 
-public class ExtensionFileValidationRule implements FileValidationRule {
+public class FileExtensionValidationRule implements FileValidationRule {
     private final Set<Extension> extensions;
 
-    public ExtensionFileValidationRule(Set<Extension> extensions) {
+    public FileExtensionValidationRule(Set<Extension> extensions) {
         ensureExtensionSetIsNotEmpty(extensions);
         this.extensions = extensions;
     }

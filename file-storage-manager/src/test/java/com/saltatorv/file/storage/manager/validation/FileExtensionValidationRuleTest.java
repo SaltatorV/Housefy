@@ -19,9 +19,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-public class ExtensionFileValidationRuleTest {
+public class FileExtensionValidationRuleTest {
 
-    private ExtensionFileValidationRule validationRule;
+    private FileExtensionValidationRule validationRule;
 
     @Test
     @DisplayName("Can throw exception when create rule with empty set of extensions")
@@ -114,7 +114,7 @@ public class ExtensionFileValidationRuleTest {
     }
 
     private void createValidationRule(Set<Extension> extensions) {
-        validationRule = new ExtensionFileValidationRule(extensions);
+        validationRule = new FileExtensionValidationRule(extensions);
     }
 
     private void validateCommand(UploadFileCommand command) {
