@@ -2,6 +2,7 @@ package com.saltatorv.file.storage.manager;
 
 import com.saltatorv.file.storage.manager.command.UploadFileCommand;
 import com.saltatorv.file.storage.manager.validation.FileValidationRule;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +26,11 @@ public class FileTest extends FilesBasedTest {
 
     public FileTest() {
         super(TEST_DIRECTORY);
+    }
+
+    @BeforeEach
+    public void setup() {
+        resultFile = null;
     }
 
     @Test

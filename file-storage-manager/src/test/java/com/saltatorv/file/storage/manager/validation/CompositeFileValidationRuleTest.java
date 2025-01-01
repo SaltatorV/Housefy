@@ -1,6 +1,7 @@
 package com.saltatorv.file.storage.manager.validation;
 
 import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,11 @@ import static org.mockito.Mockito.*;
 public class CompositeFileValidationRuleTest {
 
     private CompositeFileValidationRule compositeRule;
+
+    @BeforeEach
+    public void setup() {
+        compositeRule = null;
+    }
 
     @Test
     @DisplayName("Can validate command by every validation rule")

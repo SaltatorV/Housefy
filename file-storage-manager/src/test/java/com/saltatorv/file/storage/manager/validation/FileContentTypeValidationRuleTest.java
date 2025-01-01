@@ -1,6 +1,7 @@
 package com.saltatorv.file.storage.manager.validation;
 
 import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class FileContentTypeValidationRuleTest {
 
     private FileContentTypeValidationRule validationRule;
+
+    @BeforeEach
+    public void setup() {
+        validationRule = null;
+    }
 
     @Test
     @DisplayName("Can throw exception when create rule with empty set of content types")

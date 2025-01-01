@@ -1,5 +1,6 @@
 package com.saltatorv.file.storage.manager.vo;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +11,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ExtensionTest {
 
     private Extension extension;
+
+    @BeforeEach
+    public void setup() {
+        extension = null;
+    }
 
     @Test
     @DisplayName("Return true when extension is included in file name")

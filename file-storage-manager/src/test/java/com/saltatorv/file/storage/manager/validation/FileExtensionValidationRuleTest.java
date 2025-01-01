@@ -2,6 +2,7 @@ package com.saltatorv.file.storage.manager.validation;
 
 import com.saltatorv.file.storage.manager.command.UploadFileCommand;
 import com.saltatorv.file.storage.manager.vo.Extension;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +23,11 @@ import static org.mockito.Mockito.times;
 public class FileExtensionValidationRuleTest {
 
     private FileExtensionValidationRule validationRule;
+
+    @BeforeEach
+    public void setup() {
+        validationRule = null;
+    }
 
     @Test
     @DisplayName("Can throw exception when create rule with empty set of extensions")
