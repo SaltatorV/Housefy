@@ -13,12 +13,6 @@ public class FileExtensionValidationRule implements FileValidationRule {
         this.extensions = extensions;
     }
 
-    private void ensureExtensionSetIsNotEmpty(Set<Extension> extensions) {
-        if (extensions.isEmpty()) {
-            throw new RuntimeException("Extension set provided to ExtensionFileValidationRule can not be empty");
-        }
-    }
-
     @Override
     public void validate(UploadFileCommand command) {
         extensions
@@ -26,5 +20,11 @@ public class FileExtensionValidationRule implements FileValidationRule {
                 .filter(extension -> extension.isIncludedIn(command.getFileName()))
                 .findAny()
                 .orElseThrow(() -> new RuntimeException("File contain invalid extension"));
+    }
+
+    private void ensureExtensionSetIsNotEmpty(Set<Extension> extensions) {
+        if (extensions.isEmpty()) {
+            throw new RuntimeException("Extension set provided to FileExtensionValidationRule can not be empty");
+        }
     }
 }
