@@ -6,6 +6,7 @@ import static com.saltatorv.file.storage.manager.command.UploadFileCommandObject
 
 public class UploadFileCommandAssembler implements UploadFileCommandDefaultValue {
     private Path fileName;
+    private String contentType;
     private byte[] content;
     private boolean createDirectories;
 
@@ -20,6 +21,7 @@ public class UploadFileCommandAssembler implements UploadFileCommandDefaultValue
     public UploadFileCommandAssembler uploadTextFileAsDefault() {
         UploadFileCommand defaultValue = uploadTextFileCommand();
         this.fileName = defaultValue.getFileName();
+        this.contentType = defaultValue.getContentType();
         this.content = defaultValue.getContent();
         this.createDirectories = defaultValue.isCreateDirectories();
         return this;
@@ -32,6 +34,11 @@ public class UploadFileCommandAssembler implements UploadFileCommandDefaultValue
 
     public UploadFileCommandAssembler butWithFileName(String fileName) {
         this.fileName = Path.of(fileName);
+        return this;
+    }
+
+    public UploadFileCommandAssembler butWithContentType(String contentType) {
+        this.contentType = contentType;
         return this;
     }
 
@@ -51,6 +58,6 @@ public class UploadFileCommandAssembler implements UploadFileCommandDefaultValue
     }
 
     public UploadFileCommand create() {
-        return new UploadFileCommand(fileName, content, createDirectories);
+        return new UploadFileCommand(fileName, contentType, content, createDirectories);
     }
 }
