@@ -6,6 +6,7 @@ import com.saltatorv.file.storage.manager.validation.FileValidationRule;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 public class File {
     private Path fileName;
@@ -62,5 +63,18 @@ public class File {
         if (!Files.isRegularFile(fileName)) {
             throw new RuntimeException("Destination: %s do not point to regular file.".formatted(fileName));
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        File file = (File) o;
+        return Objects.equals(fileName, file.fileName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fileName);
     }
 }
