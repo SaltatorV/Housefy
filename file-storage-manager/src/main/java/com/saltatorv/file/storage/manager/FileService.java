@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface FileService {
 
-    List<File> getFilesFrom(Path directoryPath);
+    List<File> getFiles(Path directoryPath);
     File getFile(Path filePath);
     File uploadFile(UploadFileCommand uploadFileCommand);
 }

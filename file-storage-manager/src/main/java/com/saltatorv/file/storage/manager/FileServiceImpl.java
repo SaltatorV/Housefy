@@ -7,13 +7,13 @@ import java.util.List;
 
 public class FileServiceImpl implements FileService{
     @Override
-    public List<File> getFilesFrom(Path directoryPath) {
+    public List<File> getFiles(Path directoryPath) {
         return null;
     }
 
     @Override
     public File getFile(Path filePath) {
-        return null;
+        return new File(filePath);
     }
 
     @Override
