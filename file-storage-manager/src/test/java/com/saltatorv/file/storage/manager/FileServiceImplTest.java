@@ -27,7 +27,7 @@ public class FileServiceImplTest extends FilesBasedTest {
 
     @BeforeEach
     public void setup() {
-        fileService = new FileServiceImpl();
+        fileService = new FileServiceImpl(mock(FileValidationRule.class));
     }
 
     @Test
