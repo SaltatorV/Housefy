@@ -20,7 +20,7 @@ public class FileServiceImpl implements FileService {
         try (Stream<Path> filePaths = Files.list(directoryPath)) {
             return filePaths.map(File::new).toList();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(String.format("Can not get files from: %s", directoryPath));
         }
     }
 
