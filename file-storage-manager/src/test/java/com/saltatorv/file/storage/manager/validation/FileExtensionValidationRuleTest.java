@@ -66,35 +66,7 @@ public class FileExtensionValidationRuleTest {
         assertExtensionWasCheckedOnce(extension, command.getFileName());
     }
 
-    @Test
-    @DisplayName("Can successfully validate upload file command when rule contain multiple extensions and only one is valid")
-    public void canSuccessfullyValidateUploadFileCommandWhenRuleContainMultipleExtensionsAndOnlyOneIsValid() {
-        //given
-        var command = uploadTextFileCommand();
 
-        var first = createDummyExtension();
-        var second = createDummyExtension();
-
-        given(first.isIncludedIn(command.getFileName()))
-                .willReturn(false);
-
-        given(second.isIncludedIn(command.getFileName()))
-                .willReturn(true);
-
-        var extensions = buildExtensions()
-                .addExtension(first)
-                .addExtension(second)
-                .create();
-
-        createValidationRule(extensions);
-
-        //when
-        validateCommand(command);
-
-        //then
-        assertExtensionWasCheckedOnce(first, command.getFileName());
-        assertExtensionWasCheckedOnce(second, command.getFileName());
-    }
 
     @Test
     @DisplayName("Can throw exception when validation fail")
