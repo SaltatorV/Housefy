@@ -96,12 +96,26 @@ public class FileTest extends FilesBasedTest {
     @DisplayName("Can not create file object when file not exists")
     public void canNotCreateFileObjectWhenFileNotExists() {
         //given
-        var destination = TEST_DIRECTORY.resolve("test");
+        var destination = Path.of("test.txt");
 
         //when
-        assertThrows(RuntimeException.class, () -> createFile(destination));
+        var exception = assertThrows(RuntimeException.class, () -> createFile(destination));
 
         //then
+        assertEquals("File: test.txt do not exists.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Can not create file object when destination point to directory")
+    public void canNotCreateFileObjectWhenDestinationPointToDirectory() {
+        //given
+        createTestDirectory();
+
+        //when
+        var exception = assertThrows(RuntimeException.class, () -> createFile(TEST_DIRECTORY));
+
+        //then
+        assertEquals("Destination: tmp do not point to regular file.", exception.getMessage());
     }
 
     @Test
@@ -172,6 +186,14 @@ public class FileTest extends FilesBasedTest {
 
     private boolean deleteFile() {
         return resultFile.delete();
+    }
+
+    private void createTestDirectory() {
+        try {
+            Files.createDirectory(TEST_DIRECTORY);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void assertFileExists(String fileDestination) {
