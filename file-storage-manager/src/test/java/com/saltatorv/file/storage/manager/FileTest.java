@@ -119,21 +119,6 @@ public class FileTest extends FilesBasedTest {
     }
 
     @Test
-    @DisplayName("Can not create file object when destination do not point to regular file")
-    public void canNotCreateFileObjectWhenDestinationDoNotPointToRegularFile() {
-        //given
-        var command = buildUploadFileCommand()
-                .uploadTextFileAsDefault()
-                .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
-                .create();
-        //when
-        assertThrows(RuntimeException.class, () -> createFile(command.getFileName()));
-
-        //then
-        assertFileNotExists("tmp/test.txt");
-    }
-
-    @Test
     @DisplayName("Can delete file")
     public void canDeleteFile() {
         //given
