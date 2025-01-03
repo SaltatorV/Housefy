@@ -58,8 +58,10 @@ public class FileServiceImplTest extends FilesBasedTest {
         //when
         var uploadedFile = uploadFile(command);
 
+
         //then
         assertFileExists(fileName);
+        assertEquals(uploadedFile, createFile(fileName));
     }
 
     @Test
@@ -100,6 +102,10 @@ public class FileServiceImplTest extends FilesBasedTest {
                 .uploadTextFileAsDefault()
                 .butWithFileName(TEST_DIRECTORY.resolve(fileName))
                 .create();
+    }
+
+    private File createFile(String fileName) {
+        return new File(TEST_DIRECTORY.resolve(fileName));
     }
 
     private List<File> createTenTextFiles() {
