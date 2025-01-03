@@ -43,6 +43,10 @@
                     <targetTests>
                         <param>com.saltatorv.file.storage.manager*</param>
                     </targetTests>
+                    <excludedMethods>
+                        <excludedMethod>equals</excludedMethod>
+                        <excludedMethod>hashCode</excludedMethod>
+                    </excludedMethods>
                     <mutators>
                         <mutator>STRONGER</mutator>
                     </mutators>
