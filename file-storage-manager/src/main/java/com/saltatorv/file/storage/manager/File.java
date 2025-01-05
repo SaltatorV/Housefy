@@ -1,6 +1,10 @@
 package com.saltatorv.file.storage.manager;
 
 import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.exception.DirectoryUnavailableException;
+import com.saltatorv.file.storage.manager.exception.FileNotFoundException;
+import com.saltatorv.file.storage.manager.exception.FileStorageBaseException;
+import com.saltatorv.file.storage.manager.exception.NotRegularFileException;
 import com.saltatorv.file.storage.manager.validation.FileValidationRule;
 
 import java.io.IOException;
@@ -24,20 +28,28 @@ public class File {
         try {
             Files.write(command.getFileName(), command.getContent());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileStorageBaseException("Can not write to file: %s".formatted(command.getFileName()));
         }
 
         return new File(command.getFileName());
     }
 
     private static void createDirectoriesIfNeeded(UploadFileCommand command) {
+        Path parentDirectory = command.getFileName().getParent();
+
         if (command.isCreateDirectories()) {
             try {
-                Files.createDirectories(command.getFileName().getParent());
+                Files.createDirectories(parentDirectory);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new FileStorageBaseException("Can not create directories: %s".formatted(parentDirectory));
             }
+        } else if (directoryIsUnavailable(parentDirectory)) {
+            throw new DirectoryUnavailableException(command.getFileName());
         }
+    }
+
+    private static boolean directoryIsUnavailable(Path parentDirectory) {
+        return !Files.exists(parentDirectory);
     }
 
     public <T> T read(FileContentReader<T> fileReader) {
@@ -46,22 +58,25 @@ public class File {
 
     public boolean delete() {
         try {
-            Files.delete(fileName);
-            return true;
-        } catch (IOException e) {
+            if (Files.exists(fileName)) {
+                Files.delete(fileName);
+                return true;
+            }
             return false;
+        } catch (IOException e) {
+            throw new FileStorageBaseException("Can not delete file: %s".formatted(fileName));
         }
     }
 
     private void ensureFileExists(Path fileName) {
         if (!Files.exists(fileName)) {
-            throw new RuntimeException("File: %s do not exists.".formatted(fileName));
+            throw new FileNotFoundException(fileName);
         }
     }
 
     private void ensureDestinationPointToFile(Path fileName) {
         if (!Files.isRegularFile(fileName)) {
-            throw new RuntimeException("Destination: %s do not point to regular file.".formatted(fileName));
+            throw new NotRegularFileException(fileName);
         }
     }
 

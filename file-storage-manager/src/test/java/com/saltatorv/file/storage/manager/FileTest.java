@@ -1,6 +1,9 @@
 package com.saltatorv.file.storage.manager;
 
 import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.exception.DirectoryUnavailableException;
+import com.saltatorv.file.storage.manager.exception.FileNotFoundException;
+import com.saltatorv.file.storage.manager.exception.NotRegularFileException;
 import com.saltatorv.file.storage.manager.validation.FileValidationRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,8 +18,7 @@ import java.nio.file.Path;
 import static com.saltatorv.file.storage.manager.command.UploadFileCommandAssembler.buildUploadFileCommand;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class FileTest extends FilesBasedTest {
@@ -66,7 +68,7 @@ public class FileTest extends FilesBasedTest {
         var validationRule = createDummyValidationRule();
 
         //when
-        assertThrows(RuntimeException.class, () -> uploadFile(command, validationRule));
+        assertThrows(DirectoryUnavailableException.class, () -> uploadFile(command, validationRule));
 
         //then
         assertValidationRuleWasCalledOnce(validationRule, command);
@@ -99,10 +101,9 @@ public class FileTest extends FilesBasedTest {
         var destination = Path.of("test.txt");
 
         //when
-        var exception = assertThrows(RuntimeException.class, () -> createFile(destination));
+        assertThrows(FileNotFoundException.class, () -> createFile(destination));
 
         //then
-        assertEquals("File: test.txt do not exists.", exception.getMessage());
     }
 
     @Test
@@ -112,10 +113,9 @@ public class FileTest extends FilesBasedTest {
         createTestDirectory();
 
         //when
-        var exception = assertThrows(RuntimeException.class, () -> createFile(TEST_DIRECTORY));
+        assertThrows(NotRegularFileException.class, () -> createFile(TEST_DIRECTORY));
 
         //then
-        assertEquals("Destination: tmp do not point to regular file.", exception.getMessage());
     }
 
     @Test
