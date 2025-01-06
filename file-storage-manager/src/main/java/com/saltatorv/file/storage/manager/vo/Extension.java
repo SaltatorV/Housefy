@@ -33,4 +33,9 @@ public class Extension {
     public int hashCode() {
         return Objects.hash(extension);
     }
+
+    @Override
+    public String toString() {
+        return extension;
+    }
 }

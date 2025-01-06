@@ -1,6 +1,8 @@
 package com.saltatorv.file.storage.manager.validation;
 
 import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.exception.FileContainInvalidExtension;
+import com.saltatorv.file.storage.manager.exception.FileExtensionValidationRuleSetCanNotBeEmpty;
 import com.saltatorv.file.storage.manager.vo.Extension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +39,7 @@ public class FileExtensionValidationRuleTest {
                 .create();
 
         //when
-        assertThrows(RuntimeException.class, () -> createValidationRule(extensions));
+        assertThrows(FileExtensionValidationRuleSetCanNotBeEmpty.class, () -> createValidationRule(extensions));
 
         //then
     }
@@ -66,8 +68,6 @@ public class FileExtensionValidationRuleTest {
         assertExtensionWasCheckedOnce(extension, command.getFileName());
     }
 
-
-
     @Test
     @DisplayName("Can throw exception when validation fail")
     public void canThrowExceptionWhenValidationFail() {
@@ -86,7 +86,7 @@ public class FileExtensionValidationRuleTest {
         createValidationRule(extensions);
 
         //when
-        assertThrows(RuntimeException.class, () -> validateCommand(command));
+        assertThrows(FileContainInvalidExtension.class, () -> validateCommand(command));
 
         //then
     }
