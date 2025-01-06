@@ -17,6 +17,7 @@ import java.nio.file.Path;
 
 import static com.saltatorv.file.storage.manager.command.UploadFileCommandAssembler.buildUploadFileCommand;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
@@ -178,6 +179,29 @@ public class FileTest extends FilesBasedTest {
         assertFileNotExists("tmp/test.txt");
     }
 
+    @Test
+    @DisplayName("Can read from file using proper file content reader")
+    public void canReadFromFileUsingProperFileContentReader() {
+        //given
+        var command = buildUploadFileCommand()
+                .uploadTextFileAsDefault()
+                .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
+                .butWithContent("Test content")
+                .create();
+
+        uploadFile(command, createDummyValidationRule());
+
+        var reader = mock(FileContentReader.class);
+
+        given(reader.read(command.getFileName())).willReturn("Test content");
+
+        //when
+        var actualContent = readFromFile(reader);
+
+        //then
+        assertEquals("Test content", actualContent);
+    }
+
     private FileValidationRule createDummyValidationRule() {
         return mock(FileValidationRule.class);
     }
@@ -192,6 +216,10 @@ public class FileTest extends FilesBasedTest {
 
     private boolean deleteFile() {
         return resultFile.delete();
+    }
+
+    private String readFromFile(FileContentReader<String> reader) {
+        return resultFile.read(reader);
     }
 
     private void createTestDirectory() {

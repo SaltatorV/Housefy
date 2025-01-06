@@ -22,7 +22,7 @@ public class FileServiceImpl implements FileService {
         try (Stream<Path> filePaths = Files.list(directoryPath)) {
             return filePaths.map(File::new).toList();
         } catch (IOException e) {
-            throw new FileStorageBaseException("Files from: %s are currently unavailable".formatted(directoryPath));
+            throw new FilesUnavailableException(directoryPath);
         }
     }
 
