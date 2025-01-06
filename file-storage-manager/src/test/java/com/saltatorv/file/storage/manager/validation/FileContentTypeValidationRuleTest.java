@@ -1,6 +1,8 @@
 package com.saltatorv.file.storage.manager.validation;
 
 import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.exception.FileContainInvalidContentType;
+import com.saltatorv.file.storage.manager.exception.FileContentTypeValidationRuleSetCanNotBeEmpty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +34,7 @@ public class FileContentTypeValidationRuleTest {
                 .create();
 
         //when
-        assertThrows(RuntimeException.class, () -> createValidationRule(contentTypes));
+        assertThrows(FileContentTypeValidationRuleSetCanNotBeEmpty.class, () -> createValidationRule(contentTypes));
 
         //then
     }
@@ -98,7 +100,7 @@ public class FileContentTypeValidationRuleTest {
         createValidationRule(contentTypes);
 
         //when
-        assertThrows(RuntimeException.class, () -> validateCommand(command));
+        assertThrows(FileContainInvalidContentType.class, () -> validateCommand(command));
 
         //then
     }
