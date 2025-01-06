@@ -1,6 +1,8 @@
 package com.saltatorv.file.storage.manager;
 
 import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.exception.FileStorageBaseException;
+import com.saltatorv.file.storage.manager.exception.FilesUnavailableException;
 import com.saltatorv.file.storage.manager.validation.FileValidationRule;
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +22,7 @@ public class FileServiceImpl implements FileService {
         try (Stream<Path> filePaths = Files.list(directoryPath)) {
             return filePaths.map(File::new).toList();
         } catch (IOException e) {
-            throw new RuntimeException(String.format("Can not get files from: %s", directoryPath));
+            throw new FileStorageBaseException("Files from: %s are currently unavailable".formatted(directoryPath));
         }
     }
 

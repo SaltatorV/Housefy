@@ -34,6 +34,22 @@ public class File {
         return new File(command.getFileName());
     }
 
+    public <T> T read(FileContentReader<T> fileReader) {
+        return fileReader.read(fileName);
+    }
+
+    public boolean delete() {
+        try {
+            if (Files.exists(fileName)) {
+                Files.delete(fileName);
+                return true;
+            }
+            return false;
+        } catch (IOException e) {
+            throw new FileStorageBaseException("Can not delete file: %s".formatted(fileName));
+        }
+    }
+
     private static void createDirectoriesIfNeeded(UploadFileCommand command) {
         Path parentDirectory = command.getFileName().getParent();
 
@@ -50,22 +66,6 @@ public class File {
 
     private static boolean directoryIsUnavailable(Path parentDirectory) {
         return !Files.exists(parentDirectory);
-    }
-
-    public <T> T read(FileContentReader<T> fileReader) {
-        return fileReader.read(fileName);
-    }
-
-    public boolean delete() {
-        try {
-            if (Files.exists(fileName)) {
-                Files.delete(fileName);
-                return true;
-            }
-            return false;
-        } catch (IOException e) {
-            throw new FileStorageBaseException("Can not delete file: %s".formatted(fileName));
-        }
     }
 
     private void ensureFileExists(Path fileName) {

@@ -76,6 +76,27 @@ public class FileTest extends FilesBasedTest {
     }
 
     @Test
+    @DisplayName("Can upload new file when directories exists and createDirectories flag is false")
+    public void canUploadNewFileWhenDirectoriesExistsAndCreateDirectoriesFlagIsFalse() {
+        //given
+        var command = buildUploadFileCommand()
+                .uploadTextFileAsDefault()
+                .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
+                .skipDirectoryCreation()
+                .create();
+        var validationRule = createDummyValidationRule();
+        createTestDirectory();
+
+        //when
+        uploadFile(command, validationRule);
+
+        //then
+        assertValidationRuleWasCalledOnce(validationRule, command);
+        assertFileExists("tmp/test.txt");
+        assertFileContain("tmp/test.txt", command.getContent());
+    }
+
+    @Test
     @DisplayName("Can create file object when file exists")
     public void canCreateFileObjectWhenFileExists() {
         //given
