@@ -13,6 +13,28 @@
     <name>billing-manager</name>
     <description>billing-manager</description>
 
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>billing-manager-application</module>
+        <module>billing-manager-container</module>
+        <module>billing-manager-domain</module>
+        <module>billing-manager-dataaccess</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
