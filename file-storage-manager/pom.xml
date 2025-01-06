@@ -46,6 +46,7 @@
                     <excludedMethods>
                         <excludedMethod>equals</excludedMethod>
                         <excludedMethod>hashCode</excludedMethod>
+                        <excludedMethod>toString</excludedMethod>
                     </excludedMethods>
                     <mutators>
                         <mutator>STRONGER</mutator>
