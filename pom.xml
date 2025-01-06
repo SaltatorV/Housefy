@@ -37,6 +37,7 @@
 
     <modules>
         <module>file-storage-manager</module>
+        <module>billing-manager</module>
     </modules>
 
     <dependencyManagement>
