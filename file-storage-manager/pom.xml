@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>file-storage-manager</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>file-storage-manager</name>
     <description>file-storage-manager</description>
 
