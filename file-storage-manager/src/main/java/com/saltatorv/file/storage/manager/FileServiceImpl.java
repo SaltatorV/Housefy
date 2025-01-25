@@ -1,7 +1,6 @@
 package com.saltatorv.file.storage.manager;
 
-import com.saltatorv.file.storage.manager.command.UploadFileCommand;
-import com.saltatorv.file.storage.manager.exception.FileStorageBaseException;
+import com.saltatorv.file.storage.manager.dto.UploadFileDto;
 import com.saltatorv.file.storage.manager.exception.FilesUnavailableException;
 import com.saltatorv.file.storage.manager.validation.FileValidationRule;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +31,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File uploadFile(UploadFileCommand uploadFileCommand) {
-        return File.upload(uploadFileCommand, validationRule);
+    public File uploadFile(UploadFileDto uploadFileDto) {
+        return File.upload(uploadFileDto, validationRule);
     }
 }

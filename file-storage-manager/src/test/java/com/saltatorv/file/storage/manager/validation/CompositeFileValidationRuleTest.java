@@ -1,6 +1,6 @@
 package com.saltatorv.file.storage.manager.validation;
 
-import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.dto.UploadFileDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static com.saltatorv.file.storage.manager.command.UploadFileCommandObjectMother.uploadTextFileCommand;
+import static com.saltatorv.file.storage.manager.dto.UploadFileDtoObjectMother.uploadTextFileDto;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
@@ -25,10 +25,10 @@ public class CompositeFileValidationRuleTest {
     }
 
     @Test
-    @DisplayName("Can validate command by every validation rule")
+    @DisplayName("Can validate upload file dto by every validation rule")
     public void canValidateCommandByEveryValidationRule() {
         //given
-        var command = uploadTextFileCommand();
+        var dto = uploadTextFileDto();
 
         var firstRule = createDummyValidationRule();
         var secondRule = createDummyValidationRule();
@@ -36,34 +36,34 @@ public class CompositeFileValidationRuleTest {
         createComposite(firstRule, secondRule);
 
         //when
-        validate(command);
+        validate(dto);
 
         //then
-        assertValidationRuleWasCalledOnce(firstRule, command);
-        assertValidationRuleWasCalledOnce(secondRule, command);
+        assertValidationRuleWasCalledOnce(firstRule, dto);
+        assertValidationRuleWasCalledOnce(secondRule, dto);
     }
 
     @Test
     @DisplayName("Can break validation loop when one validation fail")
     public void canBreakValidationLoopWhenOneValidationFail() {
         //given
-        var command = uploadTextFileCommand();
+        var dto = uploadTextFileDto();
 
         var firstRule = createDummyValidationRule();
         var secondRule = createDummyValidationRule();
 
         doThrow(new RuntimeException("Validation failed"))
                 .when(firstRule)
-                .validate(command);
+                .validate(dto);
 
         createComposite(firstRule, secondRule);
 
         //when
-        assertThrows(RuntimeException.class, () -> validate(command));
+        assertThrows(RuntimeException.class, () -> validate(dto));
 
         //then
-        assertValidationRuleWasCalledOnce(firstRule, command);
-        assertValidationRuleWasNotCalled(secondRule, command);
+        assertValidationRuleWasCalledOnce(firstRule, dto);
+        assertValidationRuleWasNotCalled(secondRule, dto);
     }
 
     private FileValidationRule createDummyValidationRule() {
@@ -74,21 +74,21 @@ public class CompositeFileValidationRuleTest {
         compositeRule = new CompositeFileValidationRule(List.of(rules));
     }
 
-    private void validate(UploadFileCommand command) {
-        compositeRule.validate(command);
+    private void validate(UploadFileDto dto) {
+        compositeRule.validate(dto);
     }
 
-    private void assertValidationRuleWasCalledOnce(FileValidationRule rule, UploadFileCommand command) {
-        assertValidationRuleWasCalledNTimes(rule, command, 1);
+    private void assertValidationRuleWasCalledOnce(FileValidationRule rule, UploadFileDto dto) {
+        assertValidationRuleWasCalledNTimes(rule, dto, 1);
     }
 
-    private void assertValidationRuleWasNotCalled(FileValidationRule rule, UploadFileCommand command) {
-        assertValidationRuleWasCalledNTimes(rule, command, 0);
+    private void assertValidationRuleWasNotCalled(FileValidationRule rule, UploadFileDto dto) {
+        assertValidationRuleWasCalledNTimes(rule, dto, 0);
     }
 
-    private void assertValidationRuleWasCalledNTimes(FileValidationRule rule, UploadFileCommand command, int times) {
+    private void assertValidationRuleWasCalledNTimes(FileValidationRule rule, UploadFileDto dto, int times) {
         then(rule)
                 .should(times(times))
-                .validate(command);
+                .validate(dto);
     }
 }

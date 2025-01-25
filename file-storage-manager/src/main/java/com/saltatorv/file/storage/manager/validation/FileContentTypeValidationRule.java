@@ -1,6 +1,6 @@
 package com.saltatorv.file.storage.manager.validation;
 
-import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.dto.UploadFileDto;
 import com.saltatorv.file.storage.manager.exception.FileContainInvalidContentType;
 import com.saltatorv.file.storage.manager.exception.FileContentTypeValidationRuleSetCanNotBeEmpty;
 
@@ -15,12 +15,12 @@ public class FileContentTypeValidationRule implements FileValidationRule{
     }
 
     @Override
-    public void validate(UploadFileCommand command) {
+    public void validate(UploadFileDto uploadFileDto) {
         contentTypes
                 .stream()
-                .filter(type -> type.equals(command.getContentType()))
+                .filter(type -> type.equals(uploadFileDto.getContentType()))
                 .findAny()
-                .orElseThrow(() -> new FileContainInvalidContentType(command.getContentType(), contentTypes));
+                .orElseThrow(() -> new FileContainInvalidContentType(uploadFileDto.getContentType(), contentTypes));
     }
 
     private void ensureContentTypesSetIsNotEmpty(Set<String> contentTypes) {

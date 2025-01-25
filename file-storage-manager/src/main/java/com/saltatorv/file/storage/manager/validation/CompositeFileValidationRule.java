@@ -1,6 +1,6 @@
 package com.saltatorv.file.storage.manager.validation;
 
-import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.dto.UploadFileDto;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class CompositeFileValidationRule implements FileValidationRule{
     }
 
     @Override
-    public void validate(UploadFileCommand command) {
-        fileValidationRules.forEach(rule -> rule.validate(command));
+    public void validate(UploadFileDto uploadFileDto) {
+        fileValidationRules.forEach(rule -> rule.validate(uploadFileDto));
     }
 }

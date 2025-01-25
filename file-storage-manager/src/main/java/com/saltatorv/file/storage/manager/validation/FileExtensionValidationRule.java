@@ -1,6 +1,6 @@
 package com.saltatorv.file.storage.manager.validation;
 
-import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.dto.UploadFileDto;
 import com.saltatorv.file.storage.manager.exception.FileContainInvalidExtension;
 import com.saltatorv.file.storage.manager.exception.FileExtensionValidationRuleSetCanNotBeEmpty;
 import com.saltatorv.file.storage.manager.vo.Extension;
@@ -16,12 +16,12 @@ public class FileExtensionValidationRule implements FileValidationRule {
     }
 
     @Override
-    public void validate(UploadFileCommand command) {
+    public void validate(UploadFileDto uploadFileDto) {
         extensions
                 .stream()
-                .filter(extension -> extension.isIncludedIn(command.getFileName()))
+                .filter(extension -> extension.isIncludedIn(uploadFileDto.getFileName()))
                 .findAny()
-                .orElseThrow(() -> new FileContainInvalidExtension(command.getFileName(), extensions));
+                .orElseThrow(() -> new FileContainInvalidExtension(uploadFileDto.getFileName(), extensions));
     }
 
     private void ensureExtensionSetIsNotEmpty(Set<Extension> extensions) {

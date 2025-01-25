@@ -1,6 +1,6 @@
 package com.saltatorv.file.storage.manager.validation;
 
-import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.dto.UploadFileDto;
 import com.saltatorv.file.storage.manager.exception.FileContainInvalidContentType;
 import com.saltatorv.file.storage.manager.exception.FileContentTypeValidationRuleSetCanNotBeEmpty;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Set;
 
-import static com.saltatorv.file.storage.manager.command.UploadFileCommandAssembler.buildUploadFileCommand;
+import static com.saltatorv.file.storage.manager.dto.UploadFileDtoAssembler.buildUploadFileDto;
 import static com.saltatorv.file.storage.manager.validation.ContentTypeSetAssembler.buildContentTypes;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,10 +40,10 @@ public class FileContentTypeValidationRuleTest {
     }
 
     @Test
-    @DisplayName("Can successfully validate upload file command")
+    @DisplayName("Can successfully validate upload file dto")
     public void canSuccessfullyValidateUploadFileCommand() {
         //given
-        var command = buildUploadFileCommand()
+        var dto = buildUploadFileDto()
                 .uploadTextFileAsDefault()
                 .butWithContentType("plain/text")
                 .create();
@@ -55,17 +55,17 @@ public class FileContentTypeValidationRuleTest {
         createValidationRule(contentTypes);
 
         //when
-        assertDoesNotThrow(() -> validateCommand(command));
+        assertDoesNotThrow(() -> validateCommand(dto));
 
         //then
 
     }
 
     @Test
-    @DisplayName("Can successfully validate upload file command when rule contain multiple content types and only one is valid")
+    @DisplayName("Can successfully validate upload file dto when rule contain multiple content types and only one is valid")
     public void canSuccessfullyValidateUploadFileCommandWhenRuleContainMultipleContentTypesAndOnlyOneIsValid() {
         //given
-        var command = buildUploadFileCommand()
+        var dto = buildUploadFileDto()
                 .uploadTextFileAsDefault()
                 .butWithContentType("plain/text")
                 .create();
@@ -78,7 +78,7 @@ public class FileContentTypeValidationRuleTest {
         createValidationRule(contentTypes);
 
         //when
-        assertDoesNotThrow(() -> validateCommand(command));
+        assertDoesNotThrow(() -> validateCommand(dto));
 
         //then
 
@@ -88,7 +88,7 @@ public class FileContentTypeValidationRuleTest {
     @DisplayName("Can throw exception when validation fail")
     public void canThrowExceptionWhenValidationFail() {
         //given
-        var command = buildUploadFileCommand()
+        var dto = buildUploadFileDto()
                 .uploadTextFileAsDefault()
                 .butWithContentType("plain/text")
                 .create();
@@ -100,7 +100,7 @@ public class FileContentTypeValidationRuleTest {
         createValidationRule(contentTypes);
 
         //when
-        assertThrows(FileContainInvalidContentType.class, () -> validateCommand(command));
+        assertThrows(FileContainInvalidContentType.class, () -> validateCommand(dto));
 
         //then
     }
@@ -109,7 +109,7 @@ public class FileContentTypeValidationRuleTest {
         validationRule = new FileContentTypeValidationRule(contentTypes);
     }
 
-    private void validateCommand(UploadFileCommand command) {
-        validationRule.validate(command);
+    private void validateCommand(UploadFileDto dto) {
+        validationRule.validate(dto);
     }
 }

@@ -1,6 +1,6 @@
 package com.saltatorv.file.storage.manager;
 
-import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.dto.UploadFileDto;
 import com.saltatorv.file.storage.manager.exception.DirectoryUnavailableException;
 import com.saltatorv.file.storage.manager.exception.FileNotFoundException;
 import com.saltatorv.file.storage.manager.exception.FileStorageBaseException;
@@ -21,17 +21,17 @@ public class File {
         this.fileName = fileName;
     }
 
-    static File upload(UploadFileCommand command, FileValidationRule validationRule) {
-        validationRule.validate(command);
-        createDirectoriesIfNeeded(command);
+    static File upload(UploadFileDto uploadFileDto, FileValidationRule validationRule) {
+        validationRule.validate(uploadFileDto);
+        createDirectoriesIfNeeded(uploadFileDto);
 
         try {
-            Files.write(command.getFileName(), command.getContent());
+            Files.write(uploadFileDto.getFileName(), uploadFileDto.getContent());
         } catch (IOException e) {
-            throw new FileStorageBaseException("Can not write to file: %s".formatted(command.getFileName()));
+            throw new FileStorageBaseException("Can not write to file: %s".formatted(uploadFileDto.getFileName()));
         }
 
-        return new File(command.getFileName());
+        return new File(uploadFileDto.getFileName());
     }
 
     public <T> T read(FileContentReader<T> fileReader) {
@@ -50,17 +50,17 @@ public class File {
         }
     }
 
-    private static void createDirectoriesIfNeeded(UploadFileCommand command) {
-        Path parentDirectory = command.getFileName().getParent();
+    private static void createDirectoriesIfNeeded(UploadFileDto uploadFileDto) {
+        Path parentDirectory = uploadFileDto.getFileName().getParent();
 
-        if (command.isCreateDirectories()) {
+        if (uploadFileDto.isCreateDirectories()) {
             try {
                 Files.createDirectories(parentDirectory);
             } catch (IOException e) {
                 throw new FileStorageBaseException("Can not create directories: %s".formatted(parentDirectory));
             }
         } else if (directoryIsUnavailable(parentDirectory)) {
-            throw new DirectoryUnavailableException(command.getFileName());
+            throw new DirectoryUnavailableException(uploadFileDto.getFileName());
         }
     }
 

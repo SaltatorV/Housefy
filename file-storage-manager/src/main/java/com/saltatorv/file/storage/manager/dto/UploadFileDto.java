@@ -1,10 +1,10 @@
-package com.saltatorv.file.storage.manager.command;
+package com.saltatorv.file.storage.manager.dto;
 
 import lombok.Getter;
 
 import java.nio.file.Path;
 
-public class UploadFileCommand {
+public class UploadFileDto {
     @Getter
     private final Path fileName;
     @Getter
@@ -13,7 +13,7 @@ public class UploadFileCommand {
     @Getter
     private final boolean createDirectories;
 
-    public UploadFileCommand(Path fileName, String contentType, byte[] content, boolean createDirectories) {
+    public UploadFileDto(Path fileName, String contentType, byte[] content, boolean createDirectories) {
         this.fileName = fileName;
         this.contentType = contentType;
         this.content = content;

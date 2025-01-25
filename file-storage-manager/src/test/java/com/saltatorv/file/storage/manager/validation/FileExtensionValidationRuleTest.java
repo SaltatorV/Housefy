@@ -1,6 +1,6 @@
 package com.saltatorv.file.storage.manager.validation;
 
-import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.dto.UploadFileDto;
 import com.saltatorv.file.storage.manager.exception.FileContainInvalidExtension;
 import com.saltatorv.file.storage.manager.exception.FileExtensionValidationRuleSetCanNotBeEmpty;
 import com.saltatorv.file.storage.manager.vo.Extension;
@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.nio.file.Path;
 import java.util.Set;
 
-import static com.saltatorv.file.storage.manager.command.UploadFileCommandObjectMother.uploadTextFileCommand;
+import static com.saltatorv.file.storage.manager.dto.UploadFileDtoObjectMother.uploadTextFileDto;
 import static com.saltatorv.file.storage.manager.validation.ExtensionSetAssembler.buildExtensions;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
@@ -45,14 +45,14 @@ public class FileExtensionValidationRuleTest {
     }
 
     @Test
-    @DisplayName("Can successfully validate upload file command")
+    @DisplayName("Can successfully validate upload file dto")
     public void canSuccessfullyValidateUploadFileCommand() {
         //given
-        var command = uploadTextFileCommand();
+        var dto = uploadTextFileDto();
 
         var extension = createDummyExtension();
 
-        given(extension.isIncludedIn(command.getFileName()))
+        given(extension.isIncludedIn(dto.getFileName()))
                 .willReturn(true);
 
         var extensions = buildExtensions()
@@ -62,21 +62,21 @@ public class FileExtensionValidationRuleTest {
         createValidationRule(extensions);
 
         //when
-        validateCommand(command);
+        validateCommand(dto);
 
         //then
-        assertExtensionWasCheckedOnce(extension, command.getFileName());
+        assertExtensionWasCheckedOnce(extension, dto.getFileName());
     }
 
     @Test
     @DisplayName("Can throw exception when validation fail")
     public void canThrowExceptionWhenValidationFail() {
         //given
-        var command = uploadTextFileCommand();
+        var dto = uploadTextFileDto();
 
         var extension = createDummyExtension();
 
-        given(extension.isIncludedIn(command.getFileName()))
+        given(extension.isIncludedIn(dto.getFileName()))
                 .willReturn(false);
 
         var extensions = buildExtensions()
@@ -86,7 +86,7 @@ public class FileExtensionValidationRuleTest {
         createValidationRule(extensions);
 
         //when
-        assertThrows(FileContainInvalidExtension.class, () -> validateCommand(command));
+        assertThrows(FileContainInvalidExtension.class, () -> validateCommand(dto));
 
         //then
     }
@@ -95,8 +95,8 @@ public class FileExtensionValidationRuleTest {
         validationRule = new FileExtensionValidationRule(extensions);
     }
 
-    private void validateCommand(UploadFileCommand command) {
-        validationRule.validate(command);
+    private void validateCommand(UploadFileDto dto) {
+        validationRule.validate(dto);
     }
 
     private Extension createDummyExtension() {

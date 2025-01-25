@@ -1,6 +1,6 @@
 package com.saltatorv.file.storage.manager;
 
-import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.dto.UploadFileDto;
 import com.saltatorv.file.storage.manager.validation.FileValidationRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +13,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.saltatorv.file.storage.manager.command.UploadFileCommandAssembler.buildUploadFileCommand;
+import static com.saltatorv.file.storage.manager.dto.UploadFileDtoAssembler.buildUploadFileDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -53,10 +53,10 @@ public class FileServiceImplTest extends FilesBasedTest {
     public void canUploadNewFile() {
         //given
         var fileName = "test.txt";
-        var command = createUploadFileCommand(fileName);
+        var dto = createUploadFileCommand(fileName);
 
         //when
-        var uploadedFile = uploadFile(command);
+        var uploadedFile = uploadFile(dto);
 
 
         //then
@@ -78,8 +78,8 @@ public class FileServiceImplTest extends FilesBasedTest {
     }
 
 
-    private File uploadFile(UploadFileCommand command) {
-        return fileService.uploadFile(command);
+    private File uploadFile(UploadFileDto dto) {
+        return fileService.uploadFile(dto);
     }
 
 
@@ -92,13 +92,13 @@ public class FileServiceImplTest extends FilesBasedTest {
     }
 
     private File createTestTextFile(String fileName) {
-        UploadFileCommand command = createUploadFileCommand(fileName);
+        UploadFileDto dto = createUploadFileCommand(fileName);
 
-        return File.upload(command, mock(FileValidationRule.class));
+        return File.upload(dto, mock(FileValidationRule.class));
     }
 
-    private UploadFileCommand createUploadFileCommand(String fileName) {
-        return buildUploadFileCommand()
+    private UploadFileDto createUploadFileCommand(String fileName) {
+        return buildUploadFileDto()
                 .uploadTextFileAsDefault()
                 .butWithFileName(TEST_DIRECTORY.resolve(fileName))
                 .create();

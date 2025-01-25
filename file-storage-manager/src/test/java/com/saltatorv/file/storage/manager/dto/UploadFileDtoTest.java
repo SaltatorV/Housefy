@@ -1,38 +1,38 @@
-package com.saltatorv.file.storage.manager.command;
+package com.saltatorv.file.storage.manager.dto;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.saltatorv.file.storage.manager.command.UploadFileCommandObjectMother.uploadTextFileCommand;
+import static com.saltatorv.file.storage.manager.dto.UploadFileDtoObjectMother.uploadTextFileDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class UploadFileCommandTest {
+public class UploadFileDtoTest {
 
     @Test
     @DisplayName("Can get content copy")
     public void canGetContentCopy() {
         //given
-        var command = uploadTextFileCommand();
+        var dto = uploadTextFileDto();
 
         //when
-        var content = command.getContent();
+        var content = dto.getContent();
 
         //then
-        assertContentsAreEqual(content, command.getContent());
+        assertContentsAreEqual(content, dto.getContent());
     }
 
     @Test
     @DisplayName("Can not modify content")
     public void canNotModifyContent() {
         //given
-        var command = uploadTextFileCommand();
+        var dto = uploadTextFileDto();
         //when
-        var content = command.getContent();
+        var content = dto.getContent();
         modifyFirstElementOfArray(content);
 
         //then
-        assertContentsAreNotEqual(content, command.getContent());
+        assertContentsAreNotEqual(content, dto.getContent());
     }
 
     private void modifyFirstElementOfArray(byte[] content) {

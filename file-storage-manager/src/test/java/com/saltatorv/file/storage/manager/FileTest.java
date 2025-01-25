@@ -1,6 +1,6 @@
 package com.saltatorv.file.storage.manager;
 
-import com.saltatorv.file.storage.manager.command.UploadFileCommand;
+import com.saltatorv.file.storage.manager.dto.UploadFileDto;
 import com.saltatorv.file.storage.manager.exception.DirectoryUnavailableException;
 import com.saltatorv.file.storage.manager.exception.FileNotFoundException;
 import com.saltatorv.file.storage.manager.exception.NotRegularFileException;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static com.saltatorv.file.storage.manager.command.UploadFileCommandAssembler.buildUploadFileCommand;
+import static com.saltatorv.file.storage.manager.dto.UploadFileDtoAssembler.buildUploadFileDto;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -40,7 +40,7 @@ public class FileTest extends FilesBasedTest {
     @DisplayName("Can upload new file")
     public void canUploadNewFile() {
         //given
-        var command = buildUploadFileCommand()
+        var dto = buildUploadFileDto()
                 .uploadTextFileAsDefault()
                 .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
                 .create();
@@ -48,19 +48,19 @@ public class FileTest extends FilesBasedTest {
         var validationRule = createDummyValidationRule();
 
         //when
-        uploadFile(command, validationRule);
+        uploadFile(dto, validationRule);
 
         //then
-        assertValidationRuleWasCalledOnce(validationRule, command);
+        assertValidationRuleWasCalledOnce(validationRule, dto);
         assertFileExists("tmp/test.txt");
-        assertFileContain("tmp/test.txt", command.getContent());
+        assertFileContain("tmp/test.txt", dto.getContent());
     }
 
     @Test
     @DisplayName("Can not upload new file when directories not exists and createDirectories flag is false")
     public void canNotUploadNewFileWhenDirectoriesNotExistsAndCreateDirectoriesFlagIsFalse() {
         //given
-        var command = buildUploadFileCommand()
+        var dto = buildUploadFileDto()
                 .uploadTextFileAsDefault()
                 .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
                 .skipDirectoryCreation()
@@ -69,10 +69,10 @@ public class FileTest extends FilesBasedTest {
         var validationRule = createDummyValidationRule();
 
         //when
-        assertThrows(DirectoryUnavailableException.class, () -> uploadFile(command, validationRule));
+        assertThrows(DirectoryUnavailableException.class, () -> uploadFile(dto, validationRule));
 
         //then
-        assertValidationRuleWasCalledOnce(validationRule, command);
+        assertValidationRuleWasCalledOnce(validationRule, dto);
         assertFileNotExists("tmp/test/test.txt");
     }
 
@@ -80,7 +80,7 @@ public class FileTest extends FilesBasedTest {
     @DisplayName("Can upload new file when directories exists and createDirectories flag is false")
     public void canUploadNewFileWhenDirectoriesExistsAndCreateDirectoriesFlagIsFalse() {
         //given
-        var command = buildUploadFileCommand()
+        var dto = buildUploadFileDto()
                 .uploadTextFileAsDefault()
                 .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
                 .skipDirectoryCreation()
@@ -89,31 +89,31 @@ public class FileTest extends FilesBasedTest {
         createTestDirectory();
 
         //when
-        uploadFile(command, validationRule);
+        uploadFile(dto, validationRule);
 
         //then
-        assertValidationRuleWasCalledOnce(validationRule, command);
+        assertValidationRuleWasCalledOnce(validationRule, dto);
         assertFileExists("tmp/test.txt");
-        assertFileContain("tmp/test.txt", command.getContent());
+        assertFileContain("tmp/test.txt", dto.getContent());
     }
 
     @Test
     @DisplayName("Can create file object when file exists")
     public void canCreateFileObjectWhenFileExists() {
         //given
-        var command = buildUploadFileCommand()
+        var dto = buildUploadFileDto()
                 .uploadTextFileAsDefault()
                 .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
                 .create();
 
-        uploadFile(command, createDummyValidationRule());
+        uploadFile(dto, createDummyValidationRule());
 
         //when
-        createFile(command.getFileName());
+        createFile(dto.getFileName());
 
         //then
         assertFileExists("tmp/test.txt");
-        assertFileContain("tmp/test.txt", command.getContent());
+        assertFileContain("tmp/test.txt", dto.getContent());
     }
 
     @Test
@@ -144,12 +144,12 @@ public class FileTest extends FilesBasedTest {
     @DisplayName("Can delete file")
     public void canDeleteFile() {
         //given
-        var command = buildUploadFileCommand()
+        var dto = buildUploadFileDto()
                 .uploadTextFileAsDefault()
                 .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
                 .create();
 
-        uploadFile(command, createDummyValidationRule());
+        uploadFile(dto, createDummyValidationRule());
 
         //when
         var deleteResult = deleteFile();
@@ -163,12 +163,12 @@ public class FileTest extends FilesBasedTest {
     @DisplayName("Can delete even if file do not exists")
     public void canDeleteEvenIfFileDoNotExists() {
         //given
-        var command = buildUploadFileCommand()
+        var dto = buildUploadFileDto()
                 .uploadTextFileAsDefault()
                 .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
                 .create();
 
-        uploadFile(command, createDummyValidationRule());
+        uploadFile(dto, createDummyValidationRule());
         deleteFile();
 
         //when
@@ -183,17 +183,17 @@ public class FileTest extends FilesBasedTest {
     @DisplayName("Can read from file using proper file content reader")
     public void canReadFromFileUsingProperFileContentReader() {
         //given
-        var command = buildUploadFileCommand()
+        var dto = buildUploadFileDto()
                 .uploadTextFileAsDefault()
                 .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
                 .butWithContent("Test content")
                 .create();
 
-        uploadFile(command, createDummyValidationRule());
+        uploadFile(dto, createDummyValidationRule());
 
         var reader = mock(FileContentReader.class);
 
-        given(reader.read(command.getFileName())).willReturn("Test content");
+        given(reader.read(dto.getFileName())).willReturn("Test content");
 
         //when
         var actualContent = readFromFile(reader);
@@ -206,8 +206,8 @@ public class FileTest extends FilesBasedTest {
         return mock(FileValidationRule.class);
     }
 
-    private void uploadFile(UploadFileCommand command, FileValidationRule validationRule) {
-        resultFile = File.upload(command, validationRule);
+    private void uploadFile(UploadFileDto dto, FileValidationRule validationRule) {
+        resultFile = File.upload(dto, validationRule);
     }
 
     private void createFile(Path fileName) {
@@ -248,9 +248,9 @@ public class FileTest extends FilesBasedTest {
         assertEquals(new String(expectedContent), fileContent);
     }
 
-    private void assertValidationRuleWasCalledOnce(FileValidationRule rule, UploadFileCommand command) {
+    private void assertValidationRuleWasCalledOnce(FileValidationRule rule, UploadFileDto dto) {
         then(rule)
                 .should(times(1))
-                .validate(command);
+                .validate(dto);
     }
 }
