@@ -1,4 +1,4 @@
-package com.saltatorv.file.storage.manager.vo;
+package com.saltatorv.file.storage.manager.validation;
 
 import java.nio.file.Path;
 import java.util.Objects;

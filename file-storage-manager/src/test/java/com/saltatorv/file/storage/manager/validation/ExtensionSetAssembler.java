@@ -1,7 +1,5 @@
 package com.saltatorv.file.storage.manager.validation;
 
-import com.saltatorv.file.storage.manager.vo.Extension;
-
 import java.util.HashSet;
 import java.util.Set;
 

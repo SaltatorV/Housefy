@@ -1,6 +1,6 @@
 package com.saltatorv.file.storage.manager.exception;
 
-import com.saltatorv.file.storage.manager.vo.Extension;
+import com.saltatorv.file.storage.manager.validation.Extension;
 
 import java.nio.file.Path;
 import java.util.Set;

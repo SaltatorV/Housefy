@@ -3,7 +3,6 @@ package com.saltatorv.file.storage.manager.validation;
 import com.saltatorv.file.storage.manager.dto.UploadFileDto;
 import com.saltatorv.file.storage.manager.exception.FileContainInvalidExtension;
 import com.saltatorv.file.storage.manager.exception.FileExtensionValidationRuleSetCanNotBeEmpty;
-import com.saltatorv.file.storage.manager.vo.Extension;
 
 import java.util.Set;
 

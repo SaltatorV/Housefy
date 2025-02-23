@@ -1,4 +1,4 @@
-package com.saltatorv.file.storage.manager.vo;
+package com.saltatorv.file.storage.manager;
 
 public class Content {
     private final String content;
