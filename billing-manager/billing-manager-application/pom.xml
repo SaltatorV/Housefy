@@ -13,4 +13,17 @@
     <name>billing-manager-application</name>
     <description>billing-manager-application</description>
 
+
+    <dependencies>
+        <dependency>
+            <groupId>com.saltatorv</groupId>
+            <artifactId>billing-manager-dataaccess</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.saltatorv</groupId>
+            <artifactId>billing-manager-domain</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>
