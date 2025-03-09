@@ -15,11 +15,11 @@ public class FileUploadResult {
         this.failureCause = failureCause;
     }
 
-    public static FileUploadResult createForSuccess(File file) {
+    public static FileUploadResult produceSuccess(File file) {
         return new FileUploadResult(file, true, null);
     }
 
-    public static FileUploadResult createForFailure(String failureCause) {
+    public static FileUploadResult produceFailure(String failureCause) {
         return new FileUploadResult(null, false, failureCause);
     }
 
