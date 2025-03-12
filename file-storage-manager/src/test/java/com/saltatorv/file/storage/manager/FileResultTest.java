@@ -9,12 +9,12 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileUploadResultTest {
+public class FileResultTest {
 
     @TempDir
     private Path tempDir;
     private Path tempFile;
-    private FileUploadResult fileUploadResult;
+    private FileResult fileResult;
 
     @Test
     public void shouldReturnFileUploadResultForSuccess() {
@@ -51,26 +51,26 @@ public class FileUploadResultTest {
     }
 
     private void createForSuccess() {
-        fileUploadResult = FileUploadResult.produceSuccess(new File(tempFile));
+        fileResult = FileResult.produceSuccess(new File(tempFile));
     }
 
     private void createForFailure(String failureCause) {
-        fileUploadResult = FileUploadResult.produceFailure(failureCause);
+        fileResult = FileResult.produceFailure(failureCause);
     }
 
     private void assertFileUploadResultIsSuccess() {
-        assertTrue(fileUploadResult.isSuccess());
+        assertTrue(fileResult.isSuccess());
     }
 
     private void assertFileUploadResultIsFailure() {
-        assertFalse(fileUploadResult.isSuccess());
+        assertFalse(fileResult.isSuccess());
     }
 
     private void assertFileExists() {
-        assertNotNull(fileUploadResult.getValue());
+        assertNotNull(fileResult.getValue());
     }
 
     private void assertReasonIs(String expectedMessage) {
-        assertEquals(expectedMessage, fileUploadResult.getFailureCause());
+        assertEquals(expectedMessage, fileResult.getFailureCause());
     }
 }
