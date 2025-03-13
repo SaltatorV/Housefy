@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(MockitoExtension.class)
 public class SingleFileResultTest extends FileResultTest {
 
-
     void produceSuccess() {
         fileResult = SingleFileResult.produceSuccess(file);
     }

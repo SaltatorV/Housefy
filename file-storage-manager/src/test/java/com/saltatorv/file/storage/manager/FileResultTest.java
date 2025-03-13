@@ -1,5 +1,6 @@
 package com.saltatorv.file.storage.manager;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
@@ -11,6 +12,7 @@ public abstract class FileResultTest {
     File file;
 
     @Test
+    @DisplayName("Can produce success")
     public void canProduceSuccess() {
         // given
 
@@ -22,6 +24,7 @@ public abstract class FileResultTest {
     }
 
     @Test
+    @DisplayName("Can produce failure")
     public void canProduceFailure() {
         // given
 
@@ -31,7 +34,6 @@ public abstract class FileResultTest {
         // then
         assertResultIsValidFailure("Some error...");
     }
-
 
     abstract void produceSuccess();
 

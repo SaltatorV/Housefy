@@ -1,5 +1,6 @@
 package com.saltatorv.file.storage.manager;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class MultipleFilesResultTest extends FileResultTest {
 
     @Test
+    @DisplayName("Can not modify result value")
     public void canNotModifyResultValue() {
         // given
         produceSuccess();
@@ -22,7 +24,6 @@ public class MultipleFilesResultTest extends FileResultTest {
 
         // then
     }
-
 
     void produceSuccess() {
         fileResult = MultipleFilesResult.produceSuccess(List.of(file));
