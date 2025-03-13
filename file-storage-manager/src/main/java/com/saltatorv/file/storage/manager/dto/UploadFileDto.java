@@ -10,14 +10,11 @@ public class UploadFileDto {
     @Getter
     private final String contentType;
     private final byte[] content;
-    @Getter
-    private final boolean createDirectories;
 
-    public UploadFileDto(Path fileName, String contentType, byte[] content, boolean createDirectories) {
+    public UploadFileDto(Path fileName, String contentType, byte[] content) {
         this.fileName = fileName;
         this.contentType = contentType;
         this.content = content;
-        this.createDirectories = createDirectories;
     }
 
     public byte[] getContent() {

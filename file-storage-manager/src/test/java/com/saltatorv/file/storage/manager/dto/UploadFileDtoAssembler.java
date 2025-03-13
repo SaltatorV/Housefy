@@ -8,7 +8,6 @@ public class UploadFileDtoAssembler implements UploadFileDtoDefaultValue {
     private Path fileName;
     private String contentType;
     private byte[] content;
-    private boolean createDirectories;
 
     private UploadFileDtoAssembler() {
     }
@@ -23,7 +22,6 @@ public class UploadFileDtoAssembler implements UploadFileDtoDefaultValue {
         this.fileName = defaultValue.getFileName();
         this.contentType = defaultValue.getContentType();
         this.content = defaultValue.getContent();
-        this.createDirectories = defaultValue.isCreateDirectories();
         return this;
     }
 
@@ -47,17 +45,7 @@ public class UploadFileDtoAssembler implements UploadFileDtoDefaultValue {
         return this;
     }
 
-    public UploadFileDtoAssembler shouldCreateDirectories() {
-        this.createDirectories = true;
-        return this;
-    }
-
-    public UploadFileDtoAssembler skipDirectoryCreation() {
-        this.createDirectories = false;
-        return this;
-    }
-
     public UploadFileDto create() {
-        return new UploadFileDto(fileName, contentType, content, createDirectories);
+        return new UploadFileDto(fileName, contentType, content);
     }
 }
