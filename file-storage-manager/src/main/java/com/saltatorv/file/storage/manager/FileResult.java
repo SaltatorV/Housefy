@@ -2,28 +2,25 @@ package com.saltatorv.file.storage.manager;
 
 import lombok.Getter;
 
-public class FileResult {
-    @Getter
-    private final File value;
+public abstract class FileResult<T> {
+    private final T value;
     private final boolean isSuccess;
     @Getter
     private final String failureCause;
 
-    private FileResult(File value, boolean isSuccess, String failureCause) {
+    FileResult(T value, boolean isSuccess, String failureCause) {
         this.value = value;
         this.isSuccess = isSuccess;
         this.failureCause = failureCause;
     }
 
-    public static FileResult produceSuccess(File file) {
-        return new FileResult(file, true, null);
-    }
-
-    public static FileResult produceFailure(String failureCause) {
-        return new FileResult(null, false, failureCause);
-    }
-
     public boolean isSuccess() {
         return isSuccess;
     }
+
+    public T getValue() {
+        return processValue(value);
+    }
+
+    abstract T processValue(T value);
 }

@@ -1,76 +1,51 @@
 package com.saltatorv.file.storage.manager;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import org.mockito.Mock;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileResultTest {
-
-    @TempDir
-    private Path tempDir;
-    private Path tempFile;
-    private FileResult fileResult;
+public abstract class FileResultTest {
+    FileResult fileResult;
+    @Mock
+    File file;
 
     @Test
-    public void shouldReturnFileUploadResultForSuccess() {
-        // given
-        createTempFile("test.txt");
-
-        // when
-        createForSuccess();
-
-        // then
-        assertFileUploadResultIsSuccess();
-        assertFileExists();
-    }
-
-    @Test
-    public void shouldReturnFileUploadResultForFailure() {
+    public void canProduceSuccess() {
         // given
 
         // when
-        createForFailure("Can not upload file");
+        produceSuccess();
 
         // then
-        assertFileUploadResultIsFailure();
-        assertReasonIs("Can not upload file");
+        assertResultIsValidSuccess();
+    }
+
+    @Test
+    public void canProduceFailure() {
+        // given
+
+        // when
+        produceFailure("Some error...");
+
+        // then
+        assertResultIsValidFailure("Some error...");
     }
 
 
-    private void createTempFile(String fileName) {
-        try {
-            tempFile = Files.createTempFile(tempDir.getFileName().toString(), fileName);
-        } catch (IOException e) {
-            throw new RuntimeException("Can not create temporary file: %s".formatted(fileName));
-        }
-    }
+    abstract void produceSuccess();
 
-    private void createForSuccess() {
-        fileResult = FileResult.produceSuccess(new File(tempFile));
-    }
+    abstract void produceFailure(String failureCause);
 
-    private void createForFailure(String failureCause) {
-        fileResult = FileResult.produceFailure(failureCause);
-    }
-
-    private void assertFileUploadResultIsSuccess() {
+    private void assertResultIsValidSuccess() {
         assertTrue(fileResult.isSuccess());
+        assertResultValueIsValid();
     }
 
-    private void assertFileUploadResultIsFailure() {
+    abstract void assertResultValueIsValid();
+
+    private void assertResultIsValidFailure(String expectedFailureCause) {
         assertFalse(fileResult.isSuccess());
-    }
-
-    private void assertFileExists() {
-        assertNotNull(fileResult.getValue());
-    }
-
-    private void assertReasonIs(String expectedMessage) {
-        assertEquals(expectedMessage, fileResult.getFailureCause());
+        assertEquals(expectedFailureCause, fileResult.getFailureCause());
     }
 }
