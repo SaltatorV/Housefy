@@ -1,14 +1,13 @@
 package com.saltatorv.file.storage.manager;
 
 import com.saltatorv.file.storage.manager.dto.UploadFileDto;
-import com.saltatorv.file.storage.manager.exception.FilesUnavailableException;
+import com.saltatorv.file.storage.manager.exception.FileStorageBaseException;
 import com.saltatorv.file.storage.manager.validation.FileValidationRule;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
@@ -17,21 +16,31 @@ public class FileServiceImpl implements FileService {
     private final FileValidationRule validationRule;
 
     @Override
-    public List<File> getFiles(Path directoryPath) {
+    public MultipleFilesResult getFiles(Path directoryPath) {
+        MultipleFilesResult multipleFilesResult;
         try (Stream<Path> filePaths = Files.list(directoryPath)) {
-            return filePaths.map(File::new).toList();
+            multipleFilesResult = MultipleFilesResult.produceSuccess(filePaths.map(File::new).toList());
         } catch (IOException e) {
-            throw new FilesUnavailableException(directoryPath);
+            multipleFilesResult = MultipleFilesResult.produceFailure("Can not get files from: %s".formatted(directoryPath));
         }
+
+        return multipleFilesResult;
     }
 
     @Override
-    public File getFile(Path filePath) {
-        return new File(filePath);
+    public SingleFileResult getFile(Path filePath) {
+        SingleFileResult singleFileResult;
+        try {
+            File file = new File(filePath);
+            singleFileResult = SingleFileResult.produceSuccess(file);
+        } catch (FileStorageBaseException ex) {
+            singleFileResult = SingleFileResult.produceFailure(ex.getMessage());
+        }
+        return singleFileResult;
     }
 
     @Override
-    public File uploadFile(UploadFileDto uploadFileDto) {
+    public SingleFileResult uploadFile(UploadFileDto uploadFileDto) {
         return File.upload(uploadFileDto, validationRule);
     }
 }

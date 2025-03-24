@@ -43,7 +43,7 @@ public class File {
 
     public boolean delete() {
         try {
-            return Files.exists(fileName) && Files.deleteIfExists(fileName);
+            return Files.deleteIfExists(fileName);
         } catch (IOException e) {
             return false;
         }

@@ -97,7 +97,7 @@ public class FileTest {
         uploadFile(dto, validationRule);
 
         // then
-        assertFileResultIsFail(message);
+        assertFileResultIsFailure(message);
     }
 
 
@@ -144,7 +144,7 @@ public class FileTest {
         }
 
         // then
-        assertFileResultIsFail("Can not write to file: %s".formatted(fileName));
+        assertFileResultIsFailure("Can not write to file: %s".formatted(fileName));
     }
 
     @Test
@@ -172,7 +172,7 @@ public class FileTest {
         }
 
         // then
-        assertFileResultIsFail("Can not write to file: %s".formatted(fileName));
+        assertFileResultIsFailure("Can not write to file: %s".formatted(fileName));
     }
 
     @Test
@@ -240,6 +240,32 @@ public class FileTest {
         assertFalse(deleteResult);
         assertFileNotExists(fileName);
     }
+
+    @Test
+    @DisplayName("Should return false when try delete file and IOException occurs")
+    public void shouldReturnFalseWhenTryDeleteFileAndIOExceptionOccurs() {
+        //given
+        var fileName = temporaryDirectory.resolve("test.txt");
+
+        var dto = buildUploadFileDto()
+                .uploadTextFileAsDefault()
+                .butWithFileName(fileName)
+                .create();
+
+        uploadFile(dto, createDummyValidationRule());
+
+        try (MockedStatic<Files> filesSystem = Mockito.mockStatic(Files.class)) {
+            filesSystem.when(() -> Files.deleteIfExists(fileName))
+                    .thenThrow(new IOException());
+
+            // when
+            var deleteResult = deleteFile();
+
+            //then
+            assertFalse(deleteResult);
+        }
+    }
+
 
     @Test
     @DisplayName("Can read from file using proper file content reader")
@@ -316,7 +342,7 @@ public class FileTest {
         assertNotNull(fileResult.getValue());
     }
 
-    private void assertFileResultIsFail(String expectedFailureCause) {
+    private void assertFileResultIsFailure(String expectedFailureCause) {
         assertFalse(fileResult.isSuccess());
         assertNull(fileResult.getValue());
         assertEquals(expectedFailureCause, fileResult.getFailureCause());
