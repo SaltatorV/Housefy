@@ -1,7 +1,6 @@
 package com.saltatorv.file.storage.manager;
 
 import com.saltatorv.file.storage.manager.dto.UploadFileDto;
-import com.saltatorv.file.storage.manager.exception.DirectoryUnavailableException;
 import com.saltatorv.file.storage.manager.exception.FileNotFoundException;
 import com.saltatorv.file.storage.manager.exception.FileStorageBaseException;
 import com.saltatorv.file.storage.manager.exception.NotRegularFileException;
@@ -21,17 +20,21 @@ public class File {
         this.fileName = fileName;
     }
 
-    static File upload(UploadFileDto uploadFileDto, FileValidationRule validationRule) {
-        validationRule.validate(uploadFileDto);
-        createDirectoriesIfNeeded(uploadFileDto);
-
+    static SingleFileResult upload(UploadFileDto uploadFileDto, FileValidationRule validationRule) {
         try {
-            Files.write(uploadFileDto.getFileName(), uploadFileDto.getContent());
-        } catch (IOException e) {
-            throw new FileStorageBaseException("Can not write to file: %s".formatted(uploadFileDto.getFileName()));
+            validationRule.validate(uploadFileDto);
+        } catch (FileStorageBaseException e) {
+            return SingleFileResult.produceFailure(e.getMessage());
         }
 
-        return new File(uploadFileDto.getFileName());
+        try {
+            Files.createDirectories(uploadFileDto.getFileName().getParent());
+            Files.write(uploadFileDto.getFileName(), uploadFileDto.getContent());
+        } catch (IOException e) {
+            return SingleFileResult.produceFailure("Can not write to file: %s".formatted(uploadFileDto.getFileName()));
+        }
+
+        return SingleFileResult.produceSuccess(new File(uploadFileDto.getFileName()));
     }
 
     public <T> T read(FileContentReader<T> fileReader) {
@@ -40,32 +43,10 @@ public class File {
 
     public boolean delete() {
         try {
-            if (Files.exists(fileName)) {
-                Files.delete(fileName);
-                return true;
-            }
-            return false;
+            return Files.exists(fileName) && Files.deleteIfExists(fileName);
         } catch (IOException e) {
-            throw new FileStorageBaseException("Can not delete file: %s".formatted(fileName));
+            return false;
         }
-    }
-
-    private static void createDirectoriesIfNeeded(UploadFileDto uploadFileDto) {
-        Path parentDirectory = uploadFileDto.getFileName().getParent();
-
-        if (uploadFileDto.isCreateDirectories()) {
-            try {
-                Files.createDirectories(parentDirectory);
-            } catch (IOException e) {
-                throw new FileStorageBaseException("Can not create directories: %s".formatted(parentDirectory));
-            }
-        } else if (directoryIsUnavailable(parentDirectory)) {
-            throw new DirectoryUnavailableException(uploadFileDto.getFileName());
-        }
-    }
-
-    private static boolean directoryIsUnavailable(Path parentDirectory) {
-        return !Files.exists(parentDirectory);
     }
 
     private void ensureFileExists(Path fileName) {

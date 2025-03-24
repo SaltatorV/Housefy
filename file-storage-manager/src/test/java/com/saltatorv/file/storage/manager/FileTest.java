@@ -1,14 +1,17 @@
 package com.saltatorv.file.storage.manager;
 
 import com.saltatorv.file.storage.manager.dto.UploadFileDto;
-import com.saltatorv.file.storage.manager.exception.DirectoryUnavailableException;
 import com.saltatorv.file.storage.manager.exception.FileNotFoundException;
+import com.saltatorv.file.storage.manager.exception.FileStorageBaseException;
 import com.saltatorv.file.storage.manager.exception.NotRegularFileException;
 import com.saltatorv.file.storage.manager.validation.FileValidationRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
@@ -18,31 +21,30 @@ import java.nio.file.Path;
 import static com.saltatorv.file.storage.manager.dto.UploadFileDtoAssembler.buildUploadFileDto;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class FileTest extends FilesBasedTest {
+public class FileTest {
 
-    private static final Path TEST_DIRECTORY = Path.of("tmp");
-    private File resultFile;
-
-    public FileTest() {
-        super(TEST_DIRECTORY);
-    }
+    @TempDir
+    private Path temporaryDirectory;
+    private File file;
+    private SingleFileResult fileResult;
 
     @BeforeEach
     public void setup() {
-        resultFile = null;
+        fileResult = null;
     }
 
     @Test
     @DisplayName("Can upload new file")
     public void canUploadNewFile() {
         //given
+        var fileName = temporaryDirectory.resolve("test.txt");
+
         var dto = buildUploadFileDto()
                 .uploadTextFileAsDefault()
-                .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
+                .butWithFileName(fileName)
                 .create();
 
         var validationRule = createDummyValidationRule();
@@ -51,59 +53,63 @@ public class FileTest extends FilesBasedTest {
         uploadFile(dto, validationRule);
 
         //then
-        assertValidationRuleWasCalledOnce(validationRule, dto);
-        assertFileExists("tmp/test.txt");
-        assertFileContain("tmp/test.txt", dto.getContent());
+        assertFileResultIsSuccess();
     }
 
     @Test
-    @DisplayName("Can not upload new file when directories not exists and createDirectories flag is false")
-    public void canNotUploadNewFileWhenDirectoriesNotExistsAndCreateDirectoriesFlagIsFalse() {
+    @DisplayName("Can upload new file when directories not exists")
+    public void canUploadNewFileWhenDirectoriesNotExists() {
         //given
+        var fileName = temporaryDirectory.resolve("tmp/test.txt");
+
         var dto = buildUploadFileDto()
                 .uploadTextFileAsDefault()
-                .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
-                .skipDirectoryCreation()
+                .butWithFileName(fileName)
                 .create();
 
         var validationRule = createDummyValidationRule();
-
-        //when
-        assertThrows(DirectoryUnavailableException.class, () -> uploadFile(dto, validationRule));
-
-        //then
-        assertValidationRuleWasCalledOnce(validationRule, dto);
-        assertFileNotExists("tmp/test/test.txt");
-    }
-
-    @Test
-    @DisplayName("Can upload new file when directories exists and createDirectories flag is false")
-    public void canUploadNewFileWhenDirectoriesExistsAndCreateDirectoriesFlagIsFalse() {
-        //given
-        var dto = buildUploadFileDto()
-                .uploadTextFileAsDefault()
-                .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
-                .skipDirectoryCreation()
-                .create();
-        var validationRule = createDummyValidationRule();
-        createTestDirectory();
 
         //when
         uploadFile(dto, validationRule);
 
         //then
-        assertValidationRuleWasCalledOnce(validationRule, dto);
-        assertFileExists("tmp/test.txt");
-        assertFileContain("tmp/test.txt", dto.getContent());
+        assertFileExists(fileName);
+        assertFileContain(fileName, dto.getContent());
+        assertFileResultIsSuccess();
     }
+
+    @Test
+    @DisplayName("Can not upload file when validation rule fail")
+    public void canNotUploadFileWhenValidationRuleFail() {
+        // given
+        var fileName = temporaryDirectory.resolve("tmp/test.txt");
+
+        var dto = buildUploadFileDto()
+                .uploadTextFileAsDefault()
+                .butWithFileName(fileName)
+                .create();
+
+        var message = "Validation failed";
+
+        var validationRule = createFailingValidationRule(message);
+
+        // when
+        uploadFile(dto, validationRule);
+
+        // then
+        assertFileResultIsFail(message);
+    }
+
 
     @Test
     @DisplayName("Can create file object when file exists")
     public void canCreateFileObjectWhenFileExists() {
         //given
+        var fileName = temporaryDirectory.resolve("test.txt");
+
         var dto = buildUploadFileDto()
                 .uploadTextFileAsDefault()
-                .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
+                .butWithFileName(fileName)
                 .create();
 
         uploadFile(dto, createDummyValidationRule());
@@ -112,18 +118,71 @@ public class FileTest extends FilesBasedTest {
         createFile(dto.getFileName());
 
         //then
-        assertFileExists("tmp/test.txt");
-        assertFileContain("tmp/test.txt", dto.getContent());
+        assertFileObjectIsNotNull();
+    }
+
+
+    @Test
+    @DisplayName("Should produce failure when IOException occurs during creating directories")
+    public void shouldProduceFailureWhenIOExceptionOccursDuringCreatingDirectories() {
+        // given
+        var fileName = temporaryDirectory.resolve("test.txt");
+
+        var dto = buildUploadFileDto()
+                .uploadTextFileAsDefault()
+                .butWithFileName(fileName)
+                .create();
+
+        var validationRule = createDummyValidationRule();
+
+        try (MockedStatic<Files> filesSystem = Mockito.mockStatic(Files.class)) {
+            filesSystem.when(() -> Files.createDirectories(temporaryDirectory))
+                    .thenThrow(new IOException());
+
+            // when
+            uploadFile(dto, validationRule);
+        }
+
+        // then
+        assertFileResultIsFail("Can not write to file: %s".formatted(fileName));
+    }
+
+    @Test
+    @DisplayName("Should produce failure when IOException occurs during write to file")
+    public void shouldProduceFailureWhenIOExceptionOccursDuringWriteToFile() {
+        // given
+        var fileName = temporaryDirectory.resolve("test.txt");
+
+        var fileContent = "Test content";
+
+        var dto = buildUploadFileDto()
+                .uploadTextFileAsDefault()
+                .butWithFileName(fileName)
+                .butWithContent(fileContent)
+                .create();
+
+        var validationRule = createDummyValidationRule();
+
+        try (MockedStatic<Files> filesSystem = Mockito.mockStatic(Files.class)) {
+            filesSystem.when(() -> Files.write(fileName, fileContent.getBytes()))
+                    .thenThrow(new IOException());
+
+            // when
+            uploadFile(dto, validationRule);
+        }
+
+        // then
+        assertFileResultIsFail("Can not write to file: %s".formatted(fileName));
     }
 
     @Test
     @DisplayName("Can not create file object when file not exists")
     public void canNotCreateFileObjectWhenFileNotExists() {
         //given
-        var destination = Path.of("test.txt");
+        var fileName = temporaryDirectory.resolve("test.txt");
 
         //when
-        assertThrows(FileNotFoundException.class, () -> createFile(destination));
+        assertThrows(FileNotFoundException.class, () -> createFile(fileName));
 
         //then
     }
@@ -132,10 +191,9 @@ public class FileTest extends FilesBasedTest {
     @DisplayName("Can not create file object when destination point to directory")
     public void canNotCreateFileObjectWhenDestinationPointToDirectory() {
         //given
-        createTestDirectory();
 
         //when
-        assertThrows(NotRegularFileException.class, () -> createFile(TEST_DIRECTORY));
+        assertThrows(NotRegularFileException.class, () -> createFile(temporaryDirectory));
 
         //then
     }
@@ -144,9 +202,11 @@ public class FileTest extends FilesBasedTest {
     @DisplayName("Can delete file")
     public void canDeleteFile() {
         //given
+        var fileName = temporaryDirectory.resolve("test.txt");
+
         var dto = buildUploadFileDto()
                 .uploadTextFileAsDefault()
-                .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
+                .butWithFileName(fileName)
                 .create();
 
         uploadFile(dto, createDummyValidationRule());
@@ -156,16 +216,18 @@ public class FileTest extends FilesBasedTest {
 
         //then
         assertTrue(deleteResult);
-        assertFileNotExists("tmp/test/test.txt");
+        assertFileNotExists(fileName);
     }
 
     @Test
     @DisplayName("Can delete even if file do not exists")
     public void canDeleteEvenIfFileDoNotExists() {
         //given
+        var fileName = temporaryDirectory.resolve("test.txt");
+
         var dto = buildUploadFileDto()
                 .uploadTextFileAsDefault()
-                .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
+                .butWithFileName(fileName)
                 .create();
 
         uploadFile(dto, createDummyValidationRule());
@@ -176,16 +238,18 @@ public class FileTest extends FilesBasedTest {
 
         //then
         assertFalse(deleteResult);
-        assertFileNotExists("tmp/test.txt");
+        assertFileNotExists(fileName);
     }
 
     @Test
     @DisplayName("Can read from file using proper file content reader")
     public void canReadFromFileUsingProperFileContentReader() {
         //given
+        var fileName = temporaryDirectory.resolve("test.txt");
+
         var dto = buildUploadFileDto()
                 .uploadTextFileAsDefault()
-                .butWithFileName(TEST_DIRECTORY.resolve("test.txt"))
+                .butWithFileName(fileName)
                 .butWithContent("Test content")
                 .create();
 
@@ -202,55 +266,63 @@ public class FileTest extends FilesBasedTest {
         assertEquals("Test content", actualContent);
     }
 
+
     private FileValidationRule createDummyValidationRule() {
         return mock(FileValidationRule.class);
     }
 
+    private FileValidationRule createFailingValidationRule(String message) {
+        var rule = mock(FileValidationRule.class);
+        doThrow(new FileStorageBaseException(message)).when(rule).validate(any());
+        return rule;
+    }
+
     private void uploadFile(UploadFileDto dto, FileValidationRule validationRule) {
-        resultFile = File.upload(dto, validationRule);
+        fileResult = File.upload(dto, validationRule);
     }
 
     private void createFile(Path fileName) {
-        resultFile = new File(fileName);
+        file = new File(fileName);
     }
 
     private boolean deleteFile() {
-        return resultFile.delete();
+        return fileResult.getValue().delete();
     }
 
     private String readFromFile(FileContentReader<String> reader) {
-        return resultFile.read(reader);
+        return fileResult.getValue().read(reader);
     }
 
-    private void createTestDirectory() {
-        try {
-            Files.createDirectory(TEST_DIRECTORY);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private void assertFileExists(Path fileDestination) {
+        assertTrue(Files.exists(fileDestination));
     }
 
-    private void assertFileExists(String fileDestination) {
-        assertTrue(Files.exists(Path.of(fileDestination)));
+    private void assertFileNotExists(Path fileDestination) {
+        assertFalse(Files.exists(fileDestination));
     }
 
-    private void assertFileNotExists(String fileDestination) {
-        assertFalse(Files.exists(Path.of(fileDestination)));
-    }
-
-    private void assertFileContain(String fileDestination, byte[] expectedContent) {
+    private void assertFileContain(Path fileDestination, byte[] expectedContent) {
         String fileContent;
         try {
-            fileContent = Files.readString(Path.of(fileDestination));
+            fileContent = Files.readString(fileDestination);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         assertEquals(new String(expectedContent), fileContent);
     }
 
-    private void assertValidationRuleWasCalledOnce(FileValidationRule rule, UploadFileDto dto) {
-        then(rule)
-                .should(times(1))
-                .validate(dto);
+    private void assertFileResultIsSuccess() {
+        assertTrue(fileResult.isSuccess());
+        assertNotNull(fileResult.getValue());
+    }
+
+    private void assertFileResultIsFail(String expectedFailureCause) {
+        assertFalse(fileResult.isSuccess());
+        assertNull(fileResult.getValue());
+        assertEquals(expectedFailureCause, fileResult.getFailureCause());
+    }
+
+    private void assertFileObjectIsNotNull() {
+        assertNotNull(file);
     }
 }
